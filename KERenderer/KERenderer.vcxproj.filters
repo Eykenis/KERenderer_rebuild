@@ -24,6 +24,9 @@
     <ClCompile Include="draw2d.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PhongShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -39,6 +42,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="draw2d.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PhongShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,7 +13,7 @@ class Mesh
 public:
 	std::vector<kmath::vec3f> vert;
 	std::vector<kmath::vec3f> normal;
-	std::vector<kmath::vec3f> tex_coord;
+	std::vector<kmath::vec2f> tex_coord;
 	std::vector<std::vector<kmath::vec3i>> face;
 
 	Mesh(const char* filename) : vert(), face() {
@@ -46,6 +46,22 @@ public:
 					f.push_back(tmp);
 				}
 				face.push_back(f);
+			}
+			else if (!line.compare(0, 3, "vt ")) {
+				iss >> trash >> trash;
+				kmath::vec2f v;
+				for (int i = 0; i < 2; ++i) {
+					iss >> v.v[i];
+				}
+				tex_coord.push_back(v);
+			}
+			else if (!line.compare(0, 3, "vn ")) {
+				iss >> trash >> trash;
+				kmath::vec3f v;
+				for (int i = 0; i < 3; ++i) {
+					iss >> v.v[i];
+				}
+				normal.push_back(v);
 			}
 		}
 	}

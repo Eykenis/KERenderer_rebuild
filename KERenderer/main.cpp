@@ -5,47 +5,41 @@
 #include <algorithm>
 #include "kmath.h"
 #include "Mesh.h"
+#include "PhongShader.h"
 #include "draw2d.h"
-
-int vertex_count = 4;
-int tri_count = 2;
 
 kmath::mat4f model, view, proj, viewport;
 kmath::vec3f cameraPos, cameraUp, cameraFront;
+kmath::vec3f lightDir(0.f, 0.3f, 1.f); // trans
+kmath::vec3f lightColor(255, 255, 255);
+
+float zbuffer[WINDOW_WIDTH + 5][WINDOW_HEIGHT + 5];
 
 int main() {
     clock_t start, end;
 	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT, EW_SHOWCONSOLE);
-    Mesh mesh("./obj/african.obj");
+    Mesh mesh("./obj/Aiz.obj");
     start = clock();
+
+    lightDir = kmath::normalize(lightDir);
+    for (int i = 0; i < WINDOW_WIDTH; ++i) {
+        for (int j = 0; j < WINDOW_HEIGHT; ++j) {
+            zbuffer[i][j] = -1e10;
+        }
+    }
 
     // matrix transform
     proj = kmath::perspective(45.f, 1. * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
     view = kmath::lookat(kmath::vec3f(0.f, 0.f, 3.f), kmath::vec3f(0.f, 0.f, -1.f), kmath::vec3f(0.f, 1.f, 0.f));
-    model = kmath::model(kmath::vec3f(0.f, 0.f, 0.f), kmath::vec3f(1.f, 1.f, 1.f), kmath::vec3f(0.f, 0.f, 0.f));
+    model = kmath::model(kmath::vec3f(0.f, 30.f, 0.f), kmath::vec3f(5.f, 5.f, 5.f), kmath::vec3f(0.f, -1.4f, 0.f));
     viewport = kmath::viewport(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
 
-    for (int i = 0; i < mesh.vert.size(); ++i) {
-        kmath::vec4f vec(mesh.vert[i], 1.);
-        vec = viewport * proj * view * model * vec;
-        vec.x /= vec.w, vec.y /= vec.w, vec.z /= vec.w;
-        vec.w /= vec.w;
-        mesh.vert[i].x = vec.x;
-        mesh.vert[i].y = vec.y;
-        mesh.vert[i].z = vec.z;
-    }
+    PhongShader myshader(&mesh);
 
-    // draw
+    myshader.vert();
+
     BeginBatchDraw();
-    for (int i = 0; i < mesh.face.size(); ++i) {
-        lineTriangle(mesh.vert[mesh.face[i][0].x].x,
-                mesh.vert[mesh.face[i][0].x].y,
-                mesh.vert[mesh.face[i][1].x].x,
-                mesh.vert[mesh.face[i][1].x].y,
-                mesh.vert[mesh.face[i][2].x].x,
-                mesh.vert[mesh.face[i][2].x].y
-            );
-    }
+    myshader.frag();
     EndBatchDraw();
 
     end = clock();

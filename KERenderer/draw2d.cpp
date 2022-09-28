@@ -2,6 +2,10 @@
 #include "api.h"
 #include "macro.h"
 
+extern float zbuffer[WINDOW_WIDTH + 5][WINDOW_HEIGHT + 5];
+extern kmath::vec3f lightDir;
+extern kmath::vec3f lightColor;
+
 void drawLine(int x0, int y0, int x1, int y1, int color) {
     y0 = WINDOW_HEIGHT - y0, y1 = WINDOW_HEIGHT - y1;
     int dx = abs(x1 - x0);
@@ -40,22 +44,32 @@ kmath::vec3f barycentric(kmath::vec2f p, kmath::vec2f a, kmath::vec2f b, kmath::
     return kmath::vec3f(1.0f - v - w, v, w);
 }
 
-void drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, int c1, int c2, int c3) {
-    float xl = min(xa, min(xb, xc)), xr = max(xa, max(xb, xc));
-    float yd = min(ya, min(yb, yc)), yu = max(ya, max(yb, yc));
+float doInterpolate(kmath::vec3f interpolate, float z1, float z2, float z3) {
+    return interpolate.x * z1 + interpolate.y * z2 + interpolate.z * z3;
+}
+
+void cut_to_0_255(kmath::vec3f &vec) {
+    for (int i = 0; i < 3; ++i) {
+        vec.v[i] = min(vec.v[i], 255);
+        vec.v[i] = max(vec.v[i], 0);
+    }
+}
+
+void drawTriangle(kmath::vec3f v1, kmath::vec3f v2, kmath::vec3f v3, kmath::vec3f n1, kmath::vec3f n2, kmath::vec3f n3) {
+    float xl = min(v1.x, min(v2.x, v3.x)), xr = max(v1.x, max(v2.x, v3.x));
+    float yd = min(v1.y, min(v2.y, v3.y)), yu = max(v1.y, max(v2.y, v3.y));
+    float z;
     for (int i = xl; i <= xr; ++i) {
         if (i < 0 || i > WINDOW_WIDTH) continue;
         for (int j = yd; j <= yu; ++j) {
             if (j < 0 || j > WINDOW_HEIGHT) continue;
-            kmath::vec3f interpolate = barycentric(kmath::vec2f(i, j), kmath::vec2f(xa, ya), kmath::vec2f(xb, yb), kmath::vec2f(xc, yc));
-            if (inTriangle(interpolate)) {
-                int b = interpolate.x * (c1 & 0x0000ff) + interpolate.y * (c2 & 0x0000ff) + interpolate.z * (c3 & 0x0000ff);
-                b = b & 0x0000ff;
-                int g = interpolate.x * (c1 & 0x00ff00) + interpolate.y * (c2 & 0x00ff00) + interpolate.z * (c3 & 0x00ff00);
-                g = g & 0x00ff00;
-                int r = interpolate.x * (c1 & 0xff0000) + interpolate.y * (c2 & 0xff0000) + interpolate.z * (c3 & 0xff0000);
-                r = r & 0xff0000;
-                putpixel(i, WINDOW_HEIGHT - j, r | g | b);
+            kmath::vec3f interpolate = barycentric(kmath::vec2f(i, j), kmath::vec2f(v1.x, v1.y), kmath::vec2f(v2.x, v2.y), kmath::vec2f(v3.x, v3.y));
+            if (inTriangle(interpolate) && (z = doInterpolate(interpolate, v1.z, v2.z, v3.z)) > zbuffer[i][j]) {
+                zbuffer[i][j] = z;
+                kmath::vec3f norm = n1 * interpolate.x + n2 * interpolate.y + n3 * interpolate.z;
+                kmath::vec3f color = lightColor * (lightDir * norm);
+                cut_to_0_255(color);
+                putpixel(i, j, (unsigned)color.b << 16 | (unsigned)color.g << 8 | (unsigned)color.r);
             }
         }
     }

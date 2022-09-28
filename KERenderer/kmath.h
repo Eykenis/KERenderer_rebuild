@@ -65,7 +65,7 @@ namespace kmath {
 				T x, y, z;
 			};
 			struct {
-				T r, g, b;
+				T b, g, r;
 			};
 			T v[3];
 		};
