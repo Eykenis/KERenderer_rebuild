@@ -13,13 +13,20 @@ class Mesh
 public:
 	std::vector<kmath::vec3f> vert;
 	std::vector<kmath::vec3f> normal;
-	std::vector<kmath::vec2f> tex_coord;
+	std::vector<kmath::vec3f> tex_coord;
 	std::vector<std::vector<kmath::vec3i>> face;
+	IMAGE* diffuse;
+	char mtl_filename[128];
+	bool mtl_on;
 
-	Mesh(const char* filename) : vert(), face() {
+	void loadmtl();
+
+	Mesh(const char* filename, LPCWSTR diffuse_name) : vert(), face() {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);
 		if (in.fail()) return;
+
+		diffuse = new IMAGE;
 
 		std::string line;
 		while (!in.eof()) {
@@ -63,22 +70,13 @@ public:
 				}
 				normal.push_back(v);
 			}
+			else if (!line.compare(0, 7, "mtllib ")) {
+				for (int i = 0; i < 6; ++i) iss >> trash;
+				iss >> mtl_filename;
+				loadmtl();
+			}
 		}
-	}
-
-	void vertNormalize() {
-		float xl = 1e10, xr = -1e10, yu = -1e10, yd = 1e10;
-		for (int i = 0; i < vert.size(); ++i) {
-			xl = min(xl, vert[i].x);
-			xr = max(xr, vert[i].x);
-			yd = min(yd, vert[i].y);
-			yu = max(yu, vert[i].y);
-		}
-		float prop = (xr - xl) / (yu - yd);
-		for (int i = 0; i < vert.size(); ++i) {
-			vert[i].x = ((vert[i].x - xl) / (xr - xl) * WINDOW_HEIGHT) * prop;
-			vert[i].y = ((vert[i].y - yd) / (yu - yd) * WINDOW_HEIGHT);
-		}
+		loadimage(diffuse, diffuse_name);
 	}
 };
 

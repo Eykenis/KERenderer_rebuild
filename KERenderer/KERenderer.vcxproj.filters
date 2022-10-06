@@ -27,6 +27,12 @@
     <ClCompile Include="PhongShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GouraudShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -48,6 +54,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="PhongShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GouraudShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
