@@ -13,6 +13,8 @@ class Shader
 protected:
    Mesh* mesh;
    kmath::vec3f v1, v2, v3;
+   kmath::vec3f Ka, Kd, Ks;
+   float gloss;
 public:
 	virtual void vert(kmath::vec3i, int nface) = 0;
 	virtual void frag(kmath::vec3f& bary, kmath::vec3f& color, int nface) = 0;
@@ -27,7 +29,6 @@ public:
         } // clear z buffer
         for (int k = 0; k < mesh->face.size(); ++k) {
             kmath::vec3f normal = kmath::cross((v3 - v2), (v2 - v1));
-            if (normal * cameraFront > 0) continue;
             vert(mesh->face[k][0], 0);
             vert(mesh->face[k][1], 1);
             vert(mesh->face[k][2], 2);
@@ -43,7 +44,7 @@ public:
                         zbuffer[i][j] = z;
                         kmath::vec3f color;
                         frag(interpolate, color, k);
-                        putpixel(i, j, (unsigned)color.b << 16 | (unsigned)color.g << 8 | (unsigned)color.r);
+                        putpixel(i, j, (unsigned)color.r << 16 | (unsigned)color.g << 8 | (unsigned)color.b);
                     }
                 }
             }
