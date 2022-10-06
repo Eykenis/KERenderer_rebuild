@@ -22,7 +22,7 @@ int main() {
 	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT, EW_SHOWCONSOLE);
     setbkcolor(0x4f6f6f);
     cleardevice();
-    Mesh mesh("./obj/Aiz.obj", "./tex/Aiz_diffuse.tga");
+    Mesh mesh("./obj/Aiz.obj", L"./tex/Aiz_diffuse.tga");
     start = clock();
 
     lightDir = kmath::normalize(lightDir);

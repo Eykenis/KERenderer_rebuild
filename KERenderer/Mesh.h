@@ -13,7 +13,7 @@ public:
 	std::vector<kmath::vec3f> vert;
 	std::vector<kmath::vec3f> normal;
 	std::vector<kmath::vec2f> tex_coord;
-	std::vector<std::vector<kmath::vec3i>> face;
+	std::vector<std::vector<kmath::vec2i>> face;
 
 	Mesh(const char* filename) : vert(), face() {
 		std::ifstream in;
@@ -62,21 +62,6 @@ public:
 				}
 				normal.push_back(v);
 			}
-		}
-	}
-
-	void vertNormalize() {
-		float xl = 1e10, xr = -1e10, yu = -1e10, yd = 1e10;
-		for (int i = 0; i < vert.size(); ++i) {
-			xl = min(xl, vert[i].x);
-			xr = max(xr, vert[i].x);
-			yd = min(yd, vert[i].y);
-			yu = max(yu, vert[i].y);
-		}
-		float prop = (xr - xl) / (yu - yd);
-		for (int i = 0; i < vert.size(); ++i) {
-			vert[i].x = ((vert[i].x - xl) / (xr - xl) * WINDOW_HEIGHT) * prop;
-			vert[i].y = ((vert[i].y - yd) / (yu - yd) * WINDOW_HEIGHT);
 		}
 	}
 };
