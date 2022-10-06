@@ -14,13 +14,8 @@ public:
 	std::vector<kmath::vec3f> normal;
 	std::vector<kmath::vec2f> tex_coord;
 	std::vector<std::vector<kmath::vec3i>> face;
-	TGAImage* diffuse;
-	char mtl_filename[128];
-	bool mtl_on;
 
-	void loadmtl();
-
-	Mesh(const char* filename, const char* diffuse_name) : vert(), face() {
+	Mesh(const char* filename) : vert(), face() {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);
 		if (in.fail()) return;
@@ -67,14 +62,22 @@ public:
 				}
 				normal.push_back(v);
 			}
-			else if (!line.compare(0, 7, "mtllib ")) {
-				for (int i = 0; i < 6; ++i) iss >> trash;
-				iss >> mtl_filename;
-				loadmtl();
-			}
 		}
-		diffuse = new TGAImage;
-		printf("%d\n", diffuse->read_tga_file(diffuse_name));
+	}
+
+	void vertNormalize() {
+		float xl = 1e10, xr = -1e10, yu = -1e10, yd = 1e10;
+		for (int i = 0; i < vert.size(); ++i) {
+			xl = min(xl, vert[i].x);
+			xr = max(xr, vert[i].x);
+			yd = min(yd, vert[i].y);
+			yu = max(yu, vert[i].y);
+		}
+		float prop = (xr - xl) / (yu - yd);
+		for (int i = 0; i < vert.size(); ++i) {
+			vert[i].x = ((vert[i].x - xl) / (xr - xl) * WINDOW_HEIGHT) * prop;
+			vert[i].y = ((vert[i].y - yd) / (yu - yd) * WINDOW_HEIGHT);
+		}
 	}
 };
 

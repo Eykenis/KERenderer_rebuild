@@ -6,7 +6,6 @@
 #include <algorithm>
 #include "kmath.h"
 #include "Mesh.h"
-#include "draw2d.h"
 #include "PhongShader.h"
 #include "BlinnShader.h"
 
@@ -14,6 +13,7 @@ kmath::mat4f model, view, proj, viewport;
 kmath::vec3f cameraPos(0.f, 0.f, 3.f), cameraUp(0.f, 1.f, 0.f), cameraFront(0.f, 0.f, -1.f);
 kmath::vec3f lightDir(0.f, 0.0f, 1.f); // trans
 kmath::vec3f lightColor(255, 255, 255);
+
 float zbuffer[WINDOW_WIDTH + 5][WINDOW_HEIGHT + 5];
 float ambient;
 
@@ -26,6 +26,11 @@ int main() {
     start = clock();
 
     lightDir = kmath::normalize(lightDir);
+    for (int i = 0; i < WINDOW_WIDTH; ++i) {
+        for (int j = 0; j < WINDOW_HEIGHT; ++j) {
+            zbuffer[i][j] = -1e10;
+        }
+    }
 
     // matrix transform
     proj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);

@@ -140,10 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="draw2d.cpp" />
-    <ClCompile Include="GouraudShader.cpp" />
     <ClCompile Include="kmath.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="PhongShader.cpp" />
     <ClCompile Include="tgaimage.cpp" />
   </ItemGroup>
@@ -151,7 +149,6 @@
     <ClInclude Include="api.h" />
     <ClInclude Include="BlinnShader.h" />
     <ClInclude Include="draw2d.h" />
-    <ClInclude Include="GouraudShader.h" />
     <ClInclude Include="kmath.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="Mesh.h" />

@@ -65,7 +65,7 @@ namespace kmath {
 				T x, y, z;
 			};
 			struct {
-				T r, g, b;
+				T b, g, r;
 			};
 			T v[3];
 		};
@@ -116,7 +116,6 @@ namespace kmath {
 				T r, g, b, a;
 			};
 			T v[4];
-			vec3<T> xyz;
 		};
 
 		vec4<T>() {
