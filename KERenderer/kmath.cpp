@@ -9,9 +9,6 @@ namespace kmath {
 		ret.x /= mod, ret.y /= mod, ret.z /= mod;
 		return ret;
 	}
-	vec3f numprod(const vec3f& v1, const vec3f& v2) {
-		return vec3f(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
-	}
 	float module(const vec4f& v) {
 		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
 	}
@@ -39,7 +36,7 @@ namespace kmath {
 	mat4f rotate(float rx, float ry, float rz) {
 		rx = (rx / 180.f) * 3.14;
 		ry = (ry / 180.f) * 3.14;
-		rz = (rz / 180.f) * 3.14;z
+		rz = (rz / 180.f) * 3.14;
 		mat4f ret = mat4f::identical();
 		mat4f tmp = mat4f::identical();
 		tmp.m[1][1] = cos(rx), tmp.m[1][2] = -sin(rx), tmp.m[2][1] = sin(rx), tmp.m[2][2] = cos(rx);

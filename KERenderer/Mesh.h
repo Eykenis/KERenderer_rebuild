@@ -7,18 +7,26 @@
 #include <sstream>
 #include <vector>
 #include "api.h"
+
 class Mesh
 {
 public:
 	std::vector<kmath::vec3f> vert;
 	std::vector<kmath::vec3f> normal;
-	std::vector<kmath::vec2f> tex_coord;
-	std::vector<std::vector<kmath::vec2i>> face;
+	std::vector<kmath::vec3f> tex_coord;
+	std::vector<std::vector<kmath::vec3i>> face;
+	IMAGE* diffuse;
+	char mtl_filename[128];
+	bool mtl_on;
 
-	Mesh(const char* filename) : vert(), face() {
+	void loadmtl();
+
+	Mesh(const char* filename, LPCWSTR diffuse_name) : vert(), face() {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);
 		if (in.fail()) return;
+
+		diffuse = new IMAGE;
 
 		std::string line;
 		while (!in.eof()) {
@@ -63,6 +71,7 @@ public:
 				normal.push_back(v);
 			}
 		}
+		loadimage(diffuse, diffuse_name);
 	}
 };
 

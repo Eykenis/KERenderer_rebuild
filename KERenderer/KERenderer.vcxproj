@@ -143,18 +143,15 @@
     <ClCompile Include="kmath.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PhongShader.cpp" />
-    <ClCompile Include="tgaimage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h" />
-    <ClInclude Include="BlinnShader.h" />
     <ClInclude Include="draw2d.h" />
     <ClInclude Include="kmath.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="PhongShader.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="tgaimage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
