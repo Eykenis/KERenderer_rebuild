@@ -9,6 +9,9 @@ namespace kmath {
 		ret.x /= mod, ret.y /= mod, ret.z /= mod;
 		return ret;
 	}
+	vec3f prod(const vec3f& v1, const vec3f& v2) {
+		return vec3f(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+	}
 	float module(const vec4f& v) {
 		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
 	}

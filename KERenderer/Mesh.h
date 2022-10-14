@@ -13,20 +13,17 @@ class Mesh
 public:
 	std::vector<kmath::vec3f> vert;
 	std::vector<kmath::vec3f> normal;
-	std::vector<kmath::vec3f> tex_coord;
+	std::vector<kmath::vec2f> tex_coord;
 	std::vector<std::vector<kmath::vec3i>> face;
-	IMAGE* diffuse;
+	TGAimage* diffuse;
 	char mtl_filename[128];
-	bool mtl_on;
 
-	void loadmtl();
-
-	Mesh(const char* filename, LPCWSTR diffuse_name) : vert(), face() {
+	Mesh(const char* filename, const char* diffuse_name) : vert(), face() {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);
 		if (in.fail()) return;
 
-		diffuse = new IMAGE;
+		diffuse = new TGAimage;
 
 		std::string line;
 		while (!in.eof()) {
@@ -71,7 +68,11 @@ public:
 				normal.push_back(v);
 			}
 		}
-		loadimage(diffuse, diffuse_name);
+		if (!diffuse_name) {
+			delete diffuse;
+			diffuse = NULL;
+		}
+		else diffuse->read_TGA(diffuse_name);
 	}
 };
 

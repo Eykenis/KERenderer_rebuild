@@ -27,6 +27,15 @@
     <ClCompile Include="PhongShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="platform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TGAimage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlinnShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -50,7 +59,13 @@
     <ClInclude Include="PhongShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GouraudShader.h">
+    <ClInclude Include="platform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TGAimage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlinnShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

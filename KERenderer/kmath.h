@@ -116,6 +116,7 @@ namespace kmath {
 				T r, g, b, a;
 			};
 			T v[4];
+			kmath::vec3<T> xyz;
 		};
 
 		vec4<T>() {
@@ -367,6 +368,7 @@ namespace kmath {
 	}
 	float module(const vec3f&);
 	vec3f normalize(const vec3f&);
+	vec3f prod(const vec3f&, const vec3f&);
 	float module(const vec4f&);
 	vec4f normalize(const vec4f&);
 	mat4f pan(float px, float py, float pz);

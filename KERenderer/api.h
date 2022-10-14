@@ -1,3 +1,3 @@
 #pragma once
-#include <graphics.h>
-#include <Windows.h>
+#include "platform.h"
+#include "TGAimage.h"
