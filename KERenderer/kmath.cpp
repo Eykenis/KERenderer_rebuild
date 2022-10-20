@@ -108,4 +108,24 @@ namespace kmath {
 		scale.m[1][1] *= (ybegin - yend) / 2.;
 		return scale * ret;
 	}
+
+	void getTBN(kmath::vec3f& T, kmath::vec3f& B, kmath::vec3f p1, kmath::vec3f p2, kmath::vec3f p3, kmath::vec2f uv1, kmath::vec2f uv2, kmath::vec2f uv3) {
+		mat4f ret = mat4f::identical();
+		vec3f e1 = p2 - p1;
+		vec3f e2 = p3 - p1;
+		vec2f duv1 = uv2 - uv1;
+		vec2f duv2 = uv3 - uv1;
+
+		float f = 1.0f / (cross(duv1, duv2));
+
+		T.x = f * (duv2.y * e1.x - duv1.y * e2.x);
+		T.y = f * (duv2.y * e1.y - duv1.y * e2.y);
+		T.z = f * (duv2.y * e1.z - duv1.y * e2.z);
+		T = normalize(T);
+
+		B.x = f * (-duv2.x * e1.x + duv1.x * e2.x);
+		B.y = f * (-duv2.x * e1.y + duv1.x * e2.y);
+		B.z = f * (-duv2.x * e1.z + duv1.x * e2.z);
+		B = normalize(B);
+	}
 };

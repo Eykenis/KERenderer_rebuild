@@ -4,14 +4,18 @@
 
 extern float zbuffer[WINDOW_WIDTH][WINDOW_HEIGHT];
 extern unsigned char* framebuffer;
+extern kmath::vec3f lightDir, cameraFront;
 
 class Shader
 {
 protected:
    Mesh* mesh;
    kmath::vec3f v1, v2, v3;
+   kmath::vec2f uv1, uv2, uv3;
+   kmath::vec3f n1, n2, n3;
+   kmath::vec3f t, b, n;
 public:
-	virtual void vert(kmath::vec3i face, int nface) = 0;
+	virtual void vert(int face, int nface) = 0;
 	virtual void frag(kmath::vec3f& bary, kmath::vec3f& color, int nface) = 0;
 
     void work() {
@@ -22,10 +26,13 @@ public:
         } // clear z buffer
 
         for (int k = 0; k < mesh->face.size(); ++k) {
-            kmath::vec3f normal = kmath::cross((v3 - v2), (v2 - v1));
-            vert(mesh->face[k][0], 0);
-            vert(mesh->face[k][1], 1);
-            vert(mesh->face[k][2], 2);
+            uv1 = mesh->tex_coord[mesh->face[k][0].y];
+            uv2 = mesh->tex_coord[mesh->face[k][1].y];
+            uv3 = mesh->tex_coord[mesh->face[k][2].y];
+            kmath::getTBN(t, b, mesh->vert[mesh->face[k][0].x], mesh->vert[mesh->face[k][1].x], mesh->vert[mesh->face[k][2].x], uv1, uv2, uv3);
+            vert(k, 0);
+            vert(k, 1);
+            vert(k, 2);
             float xl = min(v1.x, min(v2.x, v3.x)), xr = max(v1.x, max(v2.x, v3.x));
             float yd = min(v1.y, min(v2.y, v3.y)), yu = max(v1.y, max(v2.y, v3.y));
             float z;

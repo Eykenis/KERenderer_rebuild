@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <conio.h>
 
 typedef struct mouse {
 

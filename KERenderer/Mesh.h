@@ -16,14 +16,16 @@ public:
 	std::vector<kmath::vec2f> tex_coord;
 	std::vector<std::vector<kmath::vec3i>> face;
 	TGAimage* diffuse;
+	TGAimage* normal_map;
 	char mtl_filename[128];
 
-	Mesh(const char* filename, const char* diffuse_name) : vert(), face() {
+	Mesh(const char* filename, const char* diffuse_name = NULL, const char* normal_name = NULL) : vert(), face() {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);
 		if (in.fail()) return;
 
 		diffuse = new TGAimage;
+		normal_map = new TGAimage;
 
 		std::string line;
 		while (!in.eof()) {
@@ -73,6 +75,11 @@ public:
 			diffuse = NULL;
 		}
 		else diffuse->read_TGA(diffuse_name);
+		if (!normal_name) {
+			delete normal_map;
+			normal_map = NULL;
+		}
+		else normal_map->read_TGA(normal_name);
 	}
 };
 

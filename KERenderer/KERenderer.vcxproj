@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlinnShader.cpp" />
+    <ClCompile Include="BlinnShader_tangent.cpp" />
     <ClCompile Include="draw2d.cpp" />
     <ClCompile Include="kmath.cpp" />
     <ClCompile Include="main.cpp" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="api.h" />
     <ClInclude Include="BlinnShader.h" />
+    <ClInclude Include="BlinnShader_tangent.h" />
     <ClInclude Include="draw2d.h" />
     <ClInclude Include="kmath.h" />
     <ClInclude Include="macro.h" />

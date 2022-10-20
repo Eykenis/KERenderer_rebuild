@@ -36,6 +36,9 @@
     <ClCompile Include="BlinnShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BlinnShader_tangent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -66,6 +69,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BlinnShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlinnShader_tangent.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

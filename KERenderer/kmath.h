@@ -378,4 +378,5 @@ namespace kmath {
 	mat4f perspective(float fov, float aspect, float n, float f);
 	mat4f lookat(vec3f cameraPos, vec3f cameraDir, vec3f cameraUp);
 	mat4f viewport(float xbegin, float xend, float ybegin, float yend);
+	void getTBN(kmath::vec3f &T, kmath::vec3f &B, kmath::vec3f p1, kmath::vec3f p2, kmath::vec3f p3, kmath::vec2f uv1, kmath::vec2f uv2, kmath::vec2f uv3);
 };
