@@ -2,7 +2,6 @@
 #include "Shader.h"
 
 extern kmath::mat4f model, view, proj, viewport;
-extern float zbuffer[WINDOW_WIDTH][WINDOW_HEIGHT];
 extern kmath::vec3f lightDir;
 extern kmath::vec3f lightColor;
 
@@ -24,7 +23,7 @@ public:
         else if (nface == 1) v2 = vec.xyz, n2 = norm.xyz, uv2 = mesh->tex_coord[mesh->face[face][1].y];
         else if (nface == 2) v3 = vec.xyz, n3 = norm.xyz, uv3 = mesh->tex_coord[mesh->face[face][2].y];
     }
-    void frag(kmath::vec3f& bary, kmath::vec3f& color, int nface) {
+    bool frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) {
         kmath::vec3f norm = n1 * bary.x + n2 * bary.y + n3 * bary.z;
         kmath::vec3f diff;
         if (mesh->diffuse) {
@@ -35,6 +34,7 @@ public:
         }
         else color = lightColor * (lightDir * norm);
         cut_to_0_255(color);
+        return true;
     }
 };
 

@@ -2,7 +2,6 @@
 #include "Shader.h"
 
 extern kmath::mat4f model, view, proj, viewport;
-extern float zbuffer[WINDOW_WIDTH][WINDOW_HEIGHT];
 extern kmath::vec3f lightDir;
 extern kmath::vec3f lightColor;
 extern kmath::vec3f cameraFront;
@@ -41,7 +40,7 @@ public:
         t_lightDir[nface] = kmath::normalize((TBN * kmath::vec4f(lightDir, 0.f)).xyz);
         t_cameraFront[nface] = kmath::normalize((TBN * kmath::vec4f(cameraFront, 0.f)).xyz);
     }
-    void frag(kmath::vec3f& bary, kmath::vec3f& color, int nface) {
+    bool frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) {
         float tex_u = uv1.x * bary.x + uv2.x * bary.y + uv3.x * bary.z;
         float tex_v = uv1.y * bary.x + uv2.y * bary.y + uv3.y * bary.z;
         kmath::vec3f _lightDir = t_lightDir[0] * bary.x + t_lightDir[1] * bary.y + t_lightDir[2] * bary.z;
@@ -60,6 +59,7 @@ public:
         ambi = prod(lightColor, Ka);
         color = diff + ambi + spec;
         cut_to_0_255(color);
+        return true;
     }
 };
 

@@ -57,6 +57,9 @@ namespace kmath {
 			this->x = v.x; this->y = v.y;
 			return *this;
 		}
+		const vec2<T> operator - () const {
+			return vec2<T>(-this->x, -this->y);
+		}
 	};
 
 	template<typename T> struct vec3 {
@@ -104,6 +107,10 @@ namespace kmath {
 		vec3<T>& operator = (const vec3<T>& v) {
 			this->x = v.x; this->y = v.y; this->z = v.z;
 			return *this;
+		}
+
+		const vec3<T> operator - () const {
+			return vec3<T>(-this->x, -this->y, -this->z);
 		}
 	};
 
@@ -161,6 +168,10 @@ namespace kmath {
 		vec4<T>& operator = (const vec4<T>& v) {
 			this->x = v.x; this->y = v.y; this->z = v.z, this->w = v.w;
 			return *this;
+		}
+
+		const vec4<T>& operator - () {
+			return vec4<T>(-this->x, -this->y, -this->z, -this->w);
 		}
 	};
 

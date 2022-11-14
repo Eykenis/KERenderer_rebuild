@@ -39,6 +39,24 @@
     <ClCompile Include="BlinnShader_tangent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RampShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TexShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlinnShader_shadow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpeDepthShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -72,6 +90,27 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BlinnShader_tangent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RampShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TexShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlinnShader_shadow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpeDepthShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
