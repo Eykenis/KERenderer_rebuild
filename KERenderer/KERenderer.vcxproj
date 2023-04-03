@@ -139,11 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-<<<<<<< Updated upstream
     <ClCompile Include="draw2d.cpp" />
     <ClCompile Include="kmath.cpp" />
     <ClCompile Include="main.cpp" />
-=======
     <ClCompile Include="afterprocess.cpp" />
     <ClCompile Include="BlinnShader.cpp" />
     <ClCompile Include="BlinnShader_shadow.cpp" />
@@ -160,7 +158,6 @@
     <ClCompile Include="SimpeDepthShader.cpp" />
     <ClCompile Include="TexShader.cpp" />
     <ClCompile Include="TGAimage.cpp" />
->>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="afterprocess.h" />

@@ -5,7 +5,6 @@
 #include <algorithm>
 #include "kmath.h"
 #include "Mesh.h"
-<<<<<<< Updated upstream
 #include "draw2d.h"
 
 int vertex_count = 4;
@@ -18,7 +17,6 @@ int main() {
     clock_t start, end;
 	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT, EW_SHOWCONSOLE);
     Mesh mesh("./obj/african.obj");
-=======
 #include "Shaders.h"
 #include "afterprocess.h"
 
@@ -51,11 +49,9 @@ int main() {
     //Mesh mesh("./obj/African.obj", "./tex/african_diffuse.tga", "./tex/african_normal_tangent.tga");
     Mesh mesh2("./obj/Aiz.obj", "./tex/Aiz_diffuse.tga");
     Mesh grass("./obj/back.obj", "./tex/back.tga");
->>>>>>> Stashed changes
     start = clock();
 
     // matrix transform
-<<<<<<< Updated upstream
     proj = kmath::perspective(45.f, 1. * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
     view = kmath::lookat(kmath::vec3f(0.f, 0.f, 3.f), kmath::vec3f(0.f, 0.f, -1.f), kmath::vec3f(0.f, 1.f, 0.f));
     model = kmath::model(kmath::vec3f(0.f, 0.f, 0.f), kmath::vec3f(1.f, 1.f, 1.f), kmath::vec3f(0.f, 0.f, 0.f));
@@ -88,7 +84,6 @@ int main() {
     printf("%fs\n", 1. * (end - start) / CLOCKS_PER_SEC);
 	system("pause");
 	return 0;
-=======
     viewport = kmath::viewport(0, 640, 0, 480);
     //lightPos = normalize(lightPos);
 
@@ -192,5 +187,4 @@ void mouse_callback() {
     cameraFront = (kmath::rotate(pitch, yaw, 0) * kmath::vec4f(0.f, 0.f, -1.f, 0.f)).xyz;
     cameraUp = (kmath::rotate(pitch, yaw, 0) * kmath::vec4f(0.f, 1.f, 0.f, 0.f)).xyz;
     cameraRight = kmath::cross(cameraUp, cameraFront);
->>>>>>> Stashed changes
 }

@@ -24,8 +24,6 @@
     <ClCompile Include="draw2d.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-<<<<<<< Updated upstream
-=======
     <ClCompile Include="PhongShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -65,7 +63,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
->>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -83,8 +80,6 @@
     <ClInclude Include="draw2d.h">
       <Filter>头文件</Filter>
     </ClInclude>
-<<<<<<< Updated upstream
-=======
     <ClInclude Include="Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -127,6 +122,5 @@
     <ClInclude Include="afterprocess.h">
       <Filter>头文件</Filter>
     </ClInclude>
->>>>>>> Stashed changes
   </ItemGroup>
 </Project>
