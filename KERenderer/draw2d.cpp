@@ -1,8 +1,15 @@
 #include "draw2d.h"
-#include "api.h"
-#include "macro.h"
 
+<<<<<<< Updated upstream
 void drawLine(int x0, int y0, int x1, int y1, int color) {
+=======
+extern float zbuffer[WINDOW_WIDTH + 5][WINDOW_HEIGHT + 5];
+extern kmath::vec3f lightDir;
+extern kmath::vec3f lightColor;
+
+void drawLine(unsigned char *framebuffer, int x0, int y0, int x1, int y1, kmath::vec3f color) {
+    // Bresenham
+>>>>>>> Stashed changes
     y0 = WINDOW_HEIGHT - y0, y1 = WINDOW_HEIGHT - y1;
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
@@ -60,3 +67,23 @@ void drawTriangle(float xa, float ya, float xb, float yb, float xc, float yc, in
         }
     }
 }
+<<<<<<< Updated upstream
+=======
+
+void drawpixel(unsigned char* framebuffer, int x, int y, kmath::vec3f color) {
+    int idx = (y * WINDOW_WIDTH + x) * 4;
+    for (int i = 0; i < 3; ++i) framebuffer[idx + i] = color.v[i];
+}
+
+void intensity(unsigned char* framebuffer, int x, int y, kmath::vec3f intense) {
+    int idx = (y * WINDOW_WIDTH + x) * 4;
+    for (int i = 0; i < 3; ++i) framebuffer[idx + i] = round(framebuffer[idx + i] * intense.v[i]);
+}
+
+kmath::vec3f getpixel(unsigned char* buffer, int x, int y) {
+    kmath::vec3f ret;
+    int idx = (y * WINDOW_WIDTH + x) * 4;
+    for (int i = 0; i < 3; ++i) ret.v[i] = buffer[idx + i];
+    return ret;
+}
+>>>>>>> Stashed changes

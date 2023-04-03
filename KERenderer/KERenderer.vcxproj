@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -139,11 +139,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
     <ClCompile Include="draw2d.cpp" />
     <ClCompile Include="kmath.cpp" />
     <ClCompile Include="main.cpp" />
+=======
+    <ClCompile Include="afterprocess.cpp" />
+    <ClCompile Include="BlinnShader.cpp" />
+    <ClCompile Include="BlinnShader_shadow.cpp" />
+    <ClCompile Include="BlinnShader_tangent.cpp" />
+    <ClCompile Include="ColorShader.cpp" />
+    <ClCompile Include="RampShader.cpp" />
+    <ClCompile Include="draw2d.cpp" />
+    <ClCompile Include="kmath.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhongShader.cpp" />
+    <ClCompile Include="platform.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShadowShader.cpp" />
+    <ClCompile Include="SimpeDepthShader.cpp" />
+    <ClCompile Include="TexShader.cpp" />
+    <ClCompile Include="TGAimage.cpp" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="afterprocess.h" />
     <ClInclude Include="api.h" />
     <ClInclude Include="draw2d.h" />
     <ClInclude Include="kmath.h" />

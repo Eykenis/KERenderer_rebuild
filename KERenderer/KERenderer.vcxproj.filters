@@ -24,6 +24,48 @@
     <ClCompile Include="draw2d.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
+=======
+    <ClCompile Include="PhongShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="platform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TGAimage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlinnShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlinnShader_tangent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RampShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TexShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlinnShader_shadow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpeDepthShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="afterprocess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -41,5 +83,50 @@
     <ClInclude Include="draw2d.h">
       <Filter>头文件</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
+=======
+    <ClInclude Include="Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PhongShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="platform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TGAimage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlinnShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlinnShader_tangent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RampShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TexShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlinnShader_shadow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpeDepthShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="afterprocess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>

@@ -101,6 +101,10 @@ namespace kmath {
 			return vec3<T>(this->x * t, this->y * t, this->z * t);
 		}
 
+		vec3<T> operator / (const T t) {
+			return vec3<T>(this->x / t, this->y / t, this->z / t);
+		}
+
 		vec3<T>& operator = (const vec3<T>& v) {
 			this->x = v.x; this->y = v.y; this->z = v.z;
 			return *this;
@@ -154,7 +158,7 @@ namespace kmath {
 		}
 
 		vec4<T> operator * (const T t) {
-			return vec3<T>(this->x * t, this->y * t, this->z * t, this->w * t);
+			return vec4<T>(this->x * t, this->y * t, this->z * t, this->w * t);
 		}
 
 		vec4<T>& operator = (const vec4<T>& v) {
@@ -365,6 +369,7 @@ namespace kmath {
 	template<typename T> vec3<T> cross(const vec3<T>& u, const vec3<T>& v) {
 		return vec3<T>(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
 	}
+	float module(const vec2f&);
 	float module(const vec3f&);
 	vec3f normalize(const vec3f&);
 	float module(const vec4f&);

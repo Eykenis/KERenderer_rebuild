@@ -1,5 +1,9 @@
 #include "kmath.h"
 namespace kmath {
+	float module(const vec2f& v) {
+		return sqrt(v.x * v.x + v.y * v.y);
+	}
+
 	float module(const vec3f& v) {
 		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
