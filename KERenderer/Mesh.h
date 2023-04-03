@@ -13,13 +13,19 @@ class Mesh
 public:
 	std::vector<kmath::vec3f> vert;
 	std::vector<kmath::vec3f> normal;
-	std::vector<kmath::vec3f> tex_coord;
+	std::vector<kmath::vec2f> tex_coord;
 	std::vector<std::vector<kmath::vec3i>> face;
+	TGAimage* diffuse;
+	TGAimage* normal_map;
+	char mtl_filename[128];
 
-	Mesh(const char* filename) : vert(), face() {
+	Mesh(const char* filename, const char* diffuse_name = NULL, const char* normal_name = NULL) : vert(), face() {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);
 		if (in.fail()) return;
+
+		diffuse = new TGAimage;
+		normal_map = new TGAimage;
 
 		std::string line;
 		while (!in.eof()) {
@@ -47,22 +53,33 @@ public:
 				}
 				face.push_back(f);
 			}
+			else if (!line.compare(0, 3, "vt ")) {
+				iss >> trash >> trash;
+				kmath::vec2f v;
+				for (int i = 0; i < 2; ++i) {
+					iss >> v.v[i];
+				}
+				tex_coord.push_back(v);
+			}
+			else if (!line.compare(0, 3, "vn ")) {
+				iss >> trash >> trash;
+				kmath::vec3f v;
+				for (int i = 0; i < 3; ++i) {
+					iss >> v.v[i];
+				}
+				normal.push_back(v);
+			}
 		}
-	}
-
-	void vertNormalize() {
-		float xl = 1e10, xr = -1e10, yu = -1e10, yd = 1e10;
-		for (int i = 0; i < vert.size(); ++i) {
-			xl = min(xl, vert[i].x);
-			xr = max(xr, vert[i].x);
-			yd = min(yd, vert[i].y);
-			yu = max(yu, vert[i].y);
+		if (!diffuse_name) {
+			delete diffuse;
+			diffuse = NULL;
 		}
-		float prop = (xr - xl) / (yu - yd);
-		for (int i = 0; i < vert.size(); ++i) {
-			vert[i].x = ((vert[i].x - xl) / (xr - xl) * WINDOW_HEIGHT) * prop;
-			vert[i].y = ((vert[i].y - yd) / (yu - yd) * WINDOW_HEIGHT);
+		else diffuse->read_TGA(diffuse_name);
+		if (!normal_name) {
+			delete normal_map;
+			normal_map = NULL;
 		}
+		else normal_map->read_TGA(normal_name);
 	}
 };
 

@@ -13,11 +13,11 @@ extern kmath::mat4f viewport;
 class Shader
 {
 protected:
-    Mesh* mesh;
+   Mesh* mesh;
     kmath::vec4f v1, v2, v3;
-    kmath::vec2f uv1, uv2, uv3;
-    kmath::vec3f n1, n2, n3;
-    kmath::vec3f t, b, n;
+   kmath::vec2f uv1, uv2, uv3;
+   kmath::vec3f n1, n2, n3;
+   kmath::vec3f t, b, n;
     kmath::vec3f worldz;
     std::vector < kmath::vec4f> position;
     std::vector < kmath::vec3f> nm_position;
@@ -27,7 +27,7 @@ protected:
     std::vector < kmath::vec3f> t_nm_position;
     std::vector < kmath::vec2f> t_uv_position;
 
-    int i, j;
+   int i, j;
 private:
     float max_elevation_angle(float* zbuffer, kmath::vec2f p, kmath::vec2f dir);
     void sutherland_clip(kmath::vec4f clip_plane);

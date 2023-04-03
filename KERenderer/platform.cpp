@@ -222,6 +222,7 @@ static void window_display()
 	// 把兼容性DC的数据传到真正的DC上
 	BitBlt(hDC, 0, 0, window->width, window->height, window->mem_dc, 0, 0, SRCCOPY);
 	ReleaseDC(window->h_window, hDC);
+
 }
 
 void window_draw(unsigned char* framebuffer)

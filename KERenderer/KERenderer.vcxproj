@@ -159,10 +159,23 @@
   <ItemGroup>
     <ClInclude Include="afterprocess.h" />
     <ClInclude Include="api.h" />
+    <ClInclude Include="BlinnShader.h" />
+    <ClInclude Include="BlinnShader_shadow.h" />
+    <ClInclude Include="BlinnShader_tangent.h" />
+    <ClInclude Include="ColorShader.h" />
+    <ClInclude Include="RampShader.h" />
     <ClInclude Include="draw2d.h" />
     <ClInclude Include="kmath.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PhongShader.h" />
+    <ClInclude Include="platform.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Shaders.h" />
+    <ClInclude Include="ShadowShader.h" />
+    <ClInclude Include="SimpeDepthShader.h" />
+    <ClInclude Include="TexShader.h" />
+    <ClInclude Include="TGAimage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

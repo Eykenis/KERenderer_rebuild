@@ -57,6 +57,9 @@ namespace kmath {
 			this->x = v.x; this->y = v.y;
 			return *this;
 		}
+		const vec2<T> operator - () const {
+			return vec2<T>(-this->x, -this->y);
+		}
 	};
 
 	template<typename T> struct vec3 {
@@ -65,7 +68,7 @@ namespace kmath {
 				T x, y, z;
 			};
 			struct {
-				T r, g, b;
+				T b, g, r;
 			};
 			T v[3];
 		};
@@ -109,6 +112,10 @@ namespace kmath {
 			this->x = v.x; this->y = v.y; this->z = v.z;
 			return *this;
 		}
+
+		const vec3<T> operator - () const {
+			return vec3<T>(-this->x, -this->y, -this->z);
+		}
 	};
 
 	template<typename T> struct vec4 {
@@ -120,6 +127,7 @@ namespace kmath {
 				T r, g, b, a;
 			};
 			T v[4];
+			kmath::vec3<T> xyz;
 		};
 
 		vec4<T>() {
@@ -164,6 +172,10 @@ namespace kmath {
 		vec4<T>& operator = (const vec4<T>& v) {
 			this->x = v.x; this->y = v.y; this->z = v.z, this->w = v.w;
 			return *this;
+		}
+
+		const vec4<T>& operator - () {
+			return vec4<T>(-this->x, -this->y, -this->z, -this->w);
 		}
 	};
 
@@ -372,6 +384,7 @@ namespace kmath {
 	float module(const vec2f&);
 	float module(const vec3f&);
 	vec3f normalize(const vec3f&);
+	vec3f prod(const vec3f&, const vec3f&);
 	float module(const vec4f&);
 	vec4f normalize(const vec4f&);
 	mat4f pan(float px, float py, float pz);
@@ -381,4 +394,5 @@ namespace kmath {
 	mat4f perspective(float fov, float aspect, float n, float f);
 	mat4f lookat(vec3f cameraPos, vec3f cameraDir, vec3f cameraUp);
 	mat4f viewport(float xbegin, float xend, float ybegin, float yend);
+	void getTBN(kmath::vec3f &T, kmath::vec3f &B, kmath::vec3f p1, kmath::vec3f p2, kmath::vec3f p3, kmath::vec2f uv1, kmath::vec2f uv2, kmath::vec2f uv3);
 };
