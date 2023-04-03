@@ -13,13 +13,6 @@ int tri_count = 2;
 kmath::mat4f model, view, proj, viewport;
 kmath::vec3f cameraPos, cameraUp, cameraFront;
 
-int main() {
-    clock_t start, end;
-	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT, EW_SHOWCONSOLE);
-    Mesh mesh("./obj/african.obj");
-#include "Shaders.h"
-#include "afterprocess.h"
-
 float xPos, yPos, lastX, lastY; // mouse position
 kmath::mat4f model, view, proj, viewport, lightSpaceMatrix;
 kmath::vec3f cameraPos(0.f, 0.f, 3.f), cameraUp(0.f, 1.f, 0.f), cameraFront(0.f, 0.f, -1.f), cameraRight(1.f, 0.f, 0.f);

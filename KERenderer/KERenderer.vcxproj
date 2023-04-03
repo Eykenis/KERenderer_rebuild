@@ -139,9 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="draw2d.cpp" />
-    <ClCompile Include="kmath.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="afterprocess.cpp" />
     <ClCompile Include="BlinnShader.cpp" />
     <ClCompile Include="BlinnShader_shadow.cpp" />
