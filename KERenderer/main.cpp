@@ -21,9 +21,7 @@ float* zbuffer = new float[WINDOW_WIDTH * WINDOW_HEIGHT];
 
 float* shadowbuffer = new float[WINDOW_WIDTH * WINDOW_HEIGHT];
 
-unsigned char* msaabuffer = new unsigned char[WINDOW_WIDTH * WINDOW_HEIGHT * 16]; // 2x2 MSAA
 unsigned char* stencilbuffer = new unsigned char[WINDOW_WIDTH * WINDOW_HEIGHT];
-unsigned char* _shadowbuffer = new unsigned char[WINDOW_WIDTH * WINDOW_HEIGHT * 4];
 unsigned char* framebuffer = new unsigned char[WINDOW_WIDTH * WINDOW_HEIGHT * 4];
 window_t* window = NULL;
 
@@ -48,7 +46,8 @@ int main() {
     model = kmath::model(kmath::vec3f(0.f, 0.f, 0.f), kmath::vec3f(1.4f, 1.4f, 1.4f), kmath::vec3f(0.f, -1.2f, 0.f));
     viewport = kmath::viewport(0, 640, 0, 480);
 
-    BlinnShader myshader(&mesh2);
+    BlinnShader_shadow myshader(&mesh2);
+    SimpleDepthShader depthshader(&mesh2);
 
     int fps = 0;
     //30.f per sec
@@ -60,16 +59,17 @@ int main() {
             start = clock();
             fps = 0;
         }
-        lighttexcutting();
         proj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 10.0f);
         view = kmath::lookat(cameraPos, kmath::normalize(cameraFront), cameraUp);
         model = kmath::model(kmath::vec3f(0.f, -30.f + y, 0.f), kmath::vec3f(1.6f, 1.6f, 1.6f), kmath::vec3f(0.f, -1.7f, 0.f));
+        
+        lighttexcutting();
 
         clearframebuffer(framebuffer);
 
         //cameraFront = (kmath::model(kmath::vec3f(0.f, y, 0.f), kmath::vec3f(1.0f, 1.0f, 1.0f), kmath::vec3f(0.f, 0.f, 0.f)) * kmath::vec4f(0.0f, 0.0f, -0.1f, 1.0f)).xyz;
-        //depthshader.work(shadowbuffer);
-        myshader.work(zbuffer, 0);
+        depthshader.work(shadowbuffer);
+        myshader.work(zbuffer);
         //filter(framebuffer);
         window_draw(framebuffer);
         mouse_callback();
@@ -84,16 +84,16 @@ int main() {
         if (GetAsyncKeyState(VK_F4)) lightIntensity -= 0.05;
         if (GetAsyncKeyState(VK_F5)) lightPos = (kmath::model(kmath::vec3f(0.f, 2.f, 0.f), kmath::vec3f(1.0f, 1.0f, 1.0f), kmath::vec3f(0.f, 0.f, 0.f)) * kmath::vec4f(lightPos, 1.f)).xyz;
         if (GetAsyncKeyState(VK_F6)) lightPos = (kmath::model(kmath::vec3f(0.f, -2.f, 0.f), kmath::vec3f(1.0f, 1.0f, 1.0f), kmath::vec3f(0.f, 0.f, 0.f)) * kmath::vec4f(lightPos, 1.f)).xyz;
-        if (GetAsyncKeyState(VK_F7)) magic_num += 0.000001;
-        if (GetAsyncKeyState(VK_F8)) magic_num -= 0.000001;
+        if (GetAsyncKeyState(VK_F7)) magic_num += 0.0001;
+        if (GetAsyncKeyState(VK_F8)) magic_num -= 0.0001;
         if (GetAsyncKeyState(VK_F9)) cameraFront = (kmath::rotate(0.f, 1.f, 0.f) * kmath::vec4f(cameraFront, 0.f)).xyz;
         if (GetAsyncKeyState(VK_F10)) cameraFront = (kmath::rotate(0.f, -1.f, 0.f) * kmath::vec4f(cameraFront, 0.f)).xyz;
         if (GetAsyncKeyState(VK_SPACE)) cameraPos.y += 0.05;
-        if (GetAsyncKeyState(VK_CONTROL)) cameraPos.y -= 0.05;
+        if (GetAsyncKeyState(VK_LSHIFT)) cameraPos.y -= 0.05;
         if (GetAsyncKeyState(VK_ESCAPE)) break;
-        Sleep(33);
+        Sleep(16);
     }
-    system("pause");
+    //system("pause");
     window_destroy();
 	return 0;
 }

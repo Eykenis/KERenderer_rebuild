@@ -41,7 +41,7 @@ void Shader::sutherland_clip(kmath::vec4f clip_plane) {
     swap(t_uv_position, uv_position);
 }
 
-void Shader::work(float* buffer, int antialiasing) {
+void Shader::work(float* buffer) {
     for (int i = 0; i < WINDOW_WIDTH; ++i) {
         for (int j = 0; j < WINDOW_HEIGHT; ++j) {
             buffer[i * WINDOW_HEIGHT + j] = -1e10;
@@ -102,7 +102,7 @@ void Shader::work(float* buffer, int antialiasing) {
             float Z = 1 / position[i].w;
             position[i] = position[i] * Z;
             position[i].w = 1.0f;
-            position[i].z = (position[i].z + 1.0) * 0.5;
+            //position[i].z = (position[i].z + 1.0) * 0.5;
 
             position[i] = viewport * position[i];
         }
@@ -141,19 +141,7 @@ void Shader::work(float* buffer, int antialiasing) {
 
                     interpolate = barycentric(kmath::vec2f(i, j), kmath::vec2f(v1.x, v1.y), kmath::vec2f(v2.x, v2.y), kmath::vec2f(v3.x, v3.y));
 
-                    if (antialiasing) {
-                        // 2x MSAA
-                        int sgnp[] = { -1, -1, 1, 1 };
-                        int sgnq[] = { -1, 1, -1, 1 };
-                        for (int k = 0; k < 4; ++k) {
-                            kmath::vec3f msaainterpolate = barycentric(kmath::vec2f(i + sgnp[k] * 0.25, j + sgnq[k] * 0.25), kmath::vec2f(v1.x, v1.y), kmath::vec2f(v2.x, v2.y), kmath::vec2f(v3.x, v3.y));
-                            if (inTriangle(msaainterpolate)) {
-                                in_count++;
-                                inflag[k] = 1;
-                            }
-                        }
-                    }
-                    else in_count = inTriangle(interpolate);
+                    in_count = inTriangle(interpolate);
 
                     if (in_count > 0 && (z = doInterpolate(interpolate, v1.z, v2.z, v3.z)) > buffer[i * WINDOW_HEIGHT + j]) {
                         buffer[WINDOW_HEIGHT * i + j] = z;
@@ -161,18 +149,6 @@ void Shader::work(float* buffer, int antialiasing) {
                         kmath::vec3f color;
                         if (!stencil_read || (stencil_read && stencilbuffer[idx] != 1)) {
                             if (frag(interpolate, color, k, i, j)) {
-                                if (antialiasing) {
-                                    // 2x MSAA
-                                    int sgnp[] = { 0, 0, 1, 1 };
-                                    int sgnq[] = { 0, 1, 0, 1 };
-                                    for (int k = 0; k < 4; ++k) {
-                                        if (inflag[k]) {
-                                            drawpixel(msaabuffer, 2 * i + sgnp[k], 2 * j + sgnq[k], color);
-                                        }
-                                    }
-                                    color = getpixel(msaabuffer, 2 * i, 2 * j) + getpixel(msaabuffer, 2 * i + 1, 2 * j) + getpixel(msaabuffer, 2 * i, 2 * j + 1) + getpixel(msaabuffer, 2 * i + 1, 2 * j + 1);
-                                    color = color * 0.25;
-                                }
                                 drawpixel(framebuffer, i, j, color);
                             }
                             if (stencil_write) stencilbuffer[idx] = 1;
