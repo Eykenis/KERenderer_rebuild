@@ -58,7 +58,7 @@ namespace kmath {
 	}
 
 	mat4f model(vec3f _rotate, vec3f _scale, vec3f _pan) {
-		return rotate(_rotate.x, _rotate.y, _rotate.z) * scale(_scale.x, _scale.y, _scale.z) * pan(_pan.x, _pan.y, _pan.z);
+		return pan(_pan.x, _pan.y, _pan.z) * scale(_scale.x, _scale.y, _scale.z) * rotate(_rotate.x, _rotate.y, _rotate.z);
 	}
 
 	mat4f ortho(float l, float r, float b, float t, float n, float f) {
@@ -106,10 +106,10 @@ namespace kmath {
 	}
 
 	mat4f viewport(float xbegin, float xend, float ybegin, float yend) {
-		mat4f ret = pan(-1., -1., 0.);
+		mat4f ret = pan(1., 1., 0.);
 		mat4f scale = mat4f::identical();
-		scale.m[0][0] *= (xbegin - xend) / 2.;
-		scale.m[1][1] *= (ybegin - yend) / 2.;
+		scale.m[0][0] *= (xend - xbegin) / 2.;
+		scale.m[1][1] *= (yend - ybegin) / 2.;
 		return scale * ret;
 	}
 

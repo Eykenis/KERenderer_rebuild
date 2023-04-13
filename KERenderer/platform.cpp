@@ -232,11 +232,12 @@ void window_draw(unsigned char* framebuffer)
 	{
 		for (int j = 0; j < window->width; j++)
 		{
-			int index = (i * window->width + j) * 4;
-			window->window_fb[index] = framebuffer[index + 2];
-			window->window_fb[index + 1] = framebuffer[index + 1];
-			window->window_fb[index + 2] = framebuffer[index];
-			window->window_fb[index + 3] = framebuffer[index + 3];
+			int index = ((window->height - i - 1) * window->width + j) * 4;
+			int idx = (i * window->width + j) * 4;
+			window->window_fb[idx] = framebuffer[index + 2];
+			window->window_fb[idx + 1] = framebuffer[index + 1];
+			window->window_fb[idx + 2] = framebuffer[index];
+			window->window_fb[idx + 3] = framebuffer[index + 3];
 		}
 	}
 	window_display();
