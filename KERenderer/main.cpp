@@ -11,7 +11,7 @@
 float xPos, yPos, lastX, lastY; // mouse position
 kmath::mat4f model, view, proj, viewport, lightSpaceMatrix;
 kmath::vec3f cameraPos(0.f, 0.f, 3.f), cameraUp(0.f, 1.f, 0.f), cameraFront(0.f, 0.f, -1.f), cameraRight(1.f, 0.f, 0.f);
-kmath::vec3f lightPos(-1.414f, 1.f, 1.414f); // trans
+kmath::vec3f lightPos(-1.414f, 0.f, 1.414f); // trans
 kmath::vec3f lightColor(255, 255, 255);
 float        lightIntensity = 1, magic_num = 0.00034;
 
@@ -123,7 +123,7 @@ int main() {
         if (GetAsyncKeyState(VK_ESCAPE)) break;
         if (GetAsyncKeyState(VK_UP)) height += 0.05;
         if (GetAsyncKeyState(VK_DOWN)) height -= 0.05;
-        Sleep(16);
+        //Sleep(16);
     }
     //system("pause");
     window_destroy();
