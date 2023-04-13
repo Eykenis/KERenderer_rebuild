@@ -148,7 +148,6 @@
     <ClCompile Include="draw2d.cpp" />
     <ClCompile Include="kmath.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PhongShader.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowShader.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="kmath.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="PhongShader.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shaders.h" />

@@ -5,6 +5,7 @@ extern kmath::mat4f model, view, proj, viewport;
 extern kmath::vec3f lightPos;
 extern kmath::vec3f lightColor;
 extern kmath::vec3f cameraFront;
+extern float lightIntensity;
 
 class RampShader :
     public Shader

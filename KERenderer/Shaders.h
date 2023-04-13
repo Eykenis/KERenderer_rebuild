@@ -1,5 +1,4 @@
 #pragma once
-#include "PhongShader.h"
 #include "BlinnShader.h"
 #include "BlinnShader_tangent.h"
 #include "ColorShader.h"

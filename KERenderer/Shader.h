@@ -24,10 +24,12 @@ protected:
     std::vector < kmath::vec4f> position;
     std::vector < kmath::vec2f> uv_position;
     std::vector < kmath::vec3f> nm_position;
+    std::vector <float> worldzs;
 
     std::vector < kmath::vec4f> t_position;
     std::vector < kmath::vec3f> t_nm_position;
     std::vector < kmath::vec2f> t_uv_position;
+    std::vector <float> t_worldzs;
 
    int i, j;
 protected:

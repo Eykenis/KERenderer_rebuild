@@ -29,13 +29,13 @@ bool RampShader::frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i,
     else {
         TGAcolor nm_ref = mesh->normal_map->get(tex_u * mesh->normal_map->getWidth(), (1 - tex_v) * mesh->normal_map->getHeight());
         for (int i = 0; i < 3; ++i) norm.v[i] = (float)nm_ref.raw[i] / 255.f * 2.f - 1.f;
-        kmath::vec4f _norm = kmath::vec4f(norm, 0.f);
-        _norm = kmath::normalize(model.inverse().transpose() * _norm);
-        norm = _norm.xyz;
+        norm = kmath::normalize(model.inverse().transpose() * kmath::vec4f(norm, 0.f)).xyz;
     }
     kmath::vec3f diff, ambi;
+    kmath::vec3f fragPos = (viewport.inverse() * (v1 * bary.x + v2 * bary.y + v3 * bary.z)).xyz;
     if (mesh->diffuse) {
-        TGAcolor ref = ramp->get((1 - (max(norm * lightPos, 0.f) * 0.8 + 0.2)) * ramp->getWidth(), 1);
+        kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
+        TGAcolor ref = ramp->get((1 - (max(norm * lightDir, 0.f)) * 0.8 + 0.2) * ramp->getWidth(), 1);
         for (int i = 0; i < 3; ++i) Kd.v[i] = ref.raw[i] / 255.;
         ref = mesh->diffuse->get(tex_u * mesh->diffuse->getWidth(), (1 - tex_v) * mesh->diffuse->getHeight());
         for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];

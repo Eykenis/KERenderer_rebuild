@@ -17,6 +17,7 @@ void Shader::sutherland_clip(kmath::vec4f clip_plane) {
     t_position.clear();
     t_nm_position.clear();
     t_uv_position.clear();
+    t_worldzs.clear();
     int sz = position.size();
     for (int i = 0; i < sz; ++i) {
         int cur_index = i, pre_index = (i - 1 + sz) % sz;
@@ -60,6 +61,7 @@ void Shader::work(float* buffer) {
         position.clear();
         nm_position.clear();
         uv_position.clear();
+        worldzs.clear();
 
         position.push_back(v1);
         position.push_back(v2);
@@ -102,7 +104,6 @@ void Shader::work(float* buffer) {
             float Z = 1 / position[i].w;
             position[i] = position[i] * Z;
             position[i].w = 1.0f;
-            //position[i].z = (position[i].z + 1.0) * 0.5;
 
             position[i] = viewport * position[i];
         }

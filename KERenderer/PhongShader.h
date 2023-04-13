@@ -4,6 +4,7 @@
 extern kmath::mat4f model, view, proj, viewport;
 extern kmath::vec3f lightPos;
 extern kmath::vec3f lightColor;
+extern float lightIntensity;
 
 class PhongShader :
     public Shader

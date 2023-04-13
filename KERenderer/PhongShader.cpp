@@ -13,15 +13,17 @@ void PhongShader::vert(int face, int nface) {
     else if (nface == 2) v3 = vec, n3 = norm.xyz, uv3 = mesh->tex_coord[mesh->face[face][2].y];
 }
 bool PhongShader::frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i, int j) {
-    kmath::vec3f norm = n1 * bary.x + n2 * bary.y + n3 * bary.z;
+    kmath::vec3f norm = kmath::normalize(n1 * bary.x + n2 * bary.y + n3 * bary.z);
     kmath::vec3f diff;
+    kmath::vec3f fragPos = (v1.xyz * bary.x + v2.xyz * bary.y + v3.xyz * bary.z);
+    kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
     if (mesh->diffuse) {
         float tex_u = uv1.x * bary.x + uv2.x * bary.y + uv3.x * bary.z;
         float tex_v = uv1.y * bary.x + uv2.y * bary.y + uv3.y * bary.z; TGAcolor ref = mesh->diffuse->get(tex_u * mesh->diffuse->getWidth(), (1 - tex_v) * mesh->diffuse->getHeight());
         for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
-        color = diff * max((lightPos * norm), 0.f);
+        color = diff * max((lightDir * norm), 0.f);
     }
-    else color = lightColor * (lightPos * norm);
+    else color = lightColor * (lightDir * norm);
     cut_to_0_255(color);
     return true;
 }

@@ -10,7 +10,9 @@ BlinnShader_tangent::BlinnShader_tangent(Mesh* m, float _gloss) {
 void BlinnShader_tangent::vert(int face, int nface) {
     kmath::vec4f vec(mesh->vert[mesh->face[face][nface].x], 1.);
     kmath::vec4f norm(mesh->normal[mesh->face[face][nface].z], 0.);
-    vec = proj * view * model * vec;
+    vec = model * vec;
+    worldz.v[nface] = vec.z;
+    vec = proj * view * vec;
     norm = kmath::normalize(model.inverse().transpose() * norm);
     if (nface == 0) v1 = vec, n1 = norm.xyz;
     else if (nface == 1) v2 = vec, n2 = norm.xyz;
@@ -20,6 +22,7 @@ void BlinnShader_tangent::vert(int face, int nface) {
     kmath::vec3f B = kmath::normalize(cross(N, T));
     TBN = kmath::mat4f::identical();
     for (int i = 0; i < 3; ++i) TBN.m[0][i] = T.v[i], TBN.m[1][i] = B.v[i], TBN.m[2][i] = N.v[i];
+    kmath::vec4f vs[] = { v1, v2, v3 };
     t_lightDir[nface] = kmath::normalize((TBN * kmath::vec4f(lightPos, 0.f)).xyz);
     t_cameraFront[nface] = kmath::normalize((TBN * kmath::vec4f(cameraFront, 0.f)).xyz);
 }

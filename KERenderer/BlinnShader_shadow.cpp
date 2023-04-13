@@ -4,7 +4,7 @@ BlinnShader_shadow::BlinnShader_shadow(Mesh* m, float _gloss) {
     mesh = m;
     gloss = _gloss;
     Ks = kmath::vec3f(0.2f, 0.2f, 0.2f);
-    Ka = kmath::vec3f(0.2f, 0.2f, 0.2f);
+    Ka = kmath::vec3f(0.1f, 0.1f, 0.1f);
     Kd = kmath::vec3f(1.f, 1.f, 1.f);
 }
 
@@ -12,7 +12,9 @@ void BlinnShader_shadow::vert(int face, int nface) {
     kmath::vec4f vec(mesh->vert[mesh->face[face][nface].x], 1.);
     kmath::vec4f norm(mesh->normal[mesh->face[face][nface].z], 0.);
     //kmath::mat4f m = viewport * proj * view * model;
-    vec = proj * view * model * vec;
+    vec = model * vec;
+    worldz.v[nface] = vec.z;
+    vec = proj * view * vec;
     norm = kmath::normalize(model.inverse().transpose() * norm);
     if (nface == 0) v1 = vec, n1 = norm.xyz, uv1 = mesh->tex_coord[mesh->face[face][0].y];
     else if (nface == 1) v2 = vec, n2 = norm.xyz, uv2 = mesh->tex_coord[mesh->face[face][1].y];
@@ -26,7 +28,7 @@ bool BlinnShader_shadow::frag(kmath::vec3f& bary, kmath::vec3f& color, int nface
     float tex_u = uv1.x * bary.x + uv2.x * bary.y + uv3.x * bary.z;
     float tex_v = uv1.y * bary.x + uv2.y * bary.y + uv3.y * bary.z;
     kmath::vec3f norm;
-    kmath::vec3f fragPos = kmath::normalize(v1.xyz * bary.x + v2.xyz * bary.y + v3.xyz * bary.z);
+    kmath::vec3f fragPos = (viewport.inverse() * (v1 * bary.x + v2 * bary.y + v3 * bary.z)).xyz;
     if (!mesh->normal_map)
         norm = kmath::normalize(n1 * bary.x + n2 * bary.y + n3 * bary.z);
     else {
@@ -45,12 +47,25 @@ bool BlinnShader_shadow::frag(kmath::vec3f& bary, kmath::vec3f& color, int nface
         kmath::vec3f halfDir = kmath::normalize(lightDir - cameraFront);
         spec = (prod(lightColor, Ks)) * pow(max(0, norm * halfDir), gloss);
         diff = (prod(Kd, diff)) * (max(norm * lightDir, 0.f) * 0.5 + 0.5);
-        ambi = prod(diff, Ka);
+        ambi = prod(lightColor, Ka);
         float x = round(doInterpolate(bary, lv1.x, lv2.x, lv3.x));
         float y = round(doInterpolate(bary, lv1.y, lv2.y, lv3.y));
         float sz = doInterpolate(bary, lv1.z, lv2.z, lv3.z);
-        if (x < 0 || y < 0 || x >= WINDOW_WIDTH || y >= WINDOW_HEIGHT) shadow = .3;
-        else shadow = (shadowbuffer[(int)(x * WINDOW_HEIGHT + y)] < sz + magic_num) * .7 + .3;
+
+        // 3x3 PCF
+        int shadowCnt = 0, accessibleCnt = 9, p[] = { 0, 0, 1, 0, -1, 0, 0, 1, 0, -1, 1, 1, -1, 1, 1, -1, -1, -1 };
+        for (int i = 0; i < 9; ++i) {
+            int px = x + p[2 * i], py = y + p[2 * i + 1];
+            if (px < 0 || py < 0 || px >= WINDOW_WIDTH || py >= WINDOW_HEIGHT) accessibleCnt--;
+            else if (shadowbuffer[(int)(px * WINDOW_HEIGHT + py)] < sz + magic_num) shadowCnt++;
+        }
+        if (accessibleCnt == 0) shadow = 0.3;
+        else shadow = (1.0 * shadowCnt / accessibleCnt) * 0.7 + 0.3;
+
+        // simple shadow
+        //if (x < 0 || y < 0 || x >= WINDOW_WIDTH || y >= WINDOW_HEIGHT) shadow = .3;
+        //else shadow = (shadowbuffer[(int)(x * WINDOW_HEIGHT + y)] < sz + magic_num) * .7 + .3;
+
         color = (diff + spec) * shadow + ambi;
     }
     else color = lightColor * (lightPos * norm);
@@ -156,14 +171,12 @@ void BlinnShader_shadow::work(float* buffer) {
             float Z = 1 / position[i].w;
             position[i] = position[i] * Z;
             position[i].w = 1.0f;
-            //position[i].z = (position[i].z + 1.0) * 0.5;
 
             position[i] = viewport * position[i];
 
             Z = 1 / lposition[i].w;
             lposition[i] = lposition[i] * Z;
             lposition[i].w = 1.0f;
-            //lposition[i].z = (lposition[i].z + 1.0) * 0.5;
 
             lposition[i] = viewport * lposition[i];
         }

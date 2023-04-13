@@ -6,11 +6,7 @@ TexShader::TexShader(Mesh* m) {
 void TexShader::vert(int face, int nface) {
     kmath::vec4f vec(mesh->vert[mesh->face[face][nface].x], 1.);
     vec = model * vec;
-
-    if (nface == 0) worldz.x = vec.z - cameraPos.z;
-    if (nface == 1) worldz.y = vec.z - cameraPos.z;
-    if (nface == 2) worldz.z = vec.z - cameraPos.z;
-
+    worldz.v[nface] = vec.z;
     vec = proj * view * vec;
 
     if (nface == 0) v1 = vec, uv1 = mesh->tex_coord[mesh->face[face][0].y];
@@ -20,7 +16,6 @@ void TexShader::vert(int face, int nface) {
 bool TexShader::frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i, int j) {
     kmath::vec3f diff;
     if (mesh->diffuse) {
-
         kmath::vec3f bary_r(bary);
         for (int i = 0; i < 3; ++i) {
             bary_r.v[i] = bary.v[i] / worldz.v[i];
