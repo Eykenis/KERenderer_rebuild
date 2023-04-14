@@ -90,7 +90,7 @@ int main() {
         }
         proj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 10.0f);
         view = kmath::lookat(cameraPos, kmath::normalize(cameraFront), cameraUp);
-        model = kmath::model(kmath::vec3f(0.f, 30.f + y, 0.f), kmath::vec3f(1.f, 1.f, 1.f), kmath::vec3f(0.f, -0.79f + height, 1.f));
+        model = kmath::model(kmath::vec3f(0.f, 30.f + y, 0.f), kmath::vec3f(1.f, 1.f, 1.f), kmath::vec3f(0.f, -0.79f + height, 1.f + depth));
         
         lighttexcutting();
 
@@ -123,6 +123,8 @@ int main() {
         if (GetAsyncKeyState(VK_ESCAPE)) break;
         if (GetAsyncKeyState(VK_UP)) height += 0.05;
         if (GetAsyncKeyState(VK_DOWN)) height -= 0.05;
+        if (GetAsyncKeyState(VK_LEFT)) depth -= 0.05;
+        if (GetAsyncKeyState(VK_RIGHT)) depth += 0.05;
         //Sleep(16);
     }
     //system("pause");

@@ -150,7 +150,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShadowShader.cpp" />
     <ClCompile Include="SimpeDepthShader.cpp" />
     <ClCompile Include="TexShader.cpp" />
     <ClCompile Include="TGAimage.cpp" />
@@ -170,8 +169,8 @@
     <ClInclude Include="platform.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shaders.h" />
-    <ClInclude Include="ShadowShader.h" />
     <ClInclude Include="SimpeDepthShader.h" />
+    <ClInclude Include="SubMesh.h" />
     <ClInclude Include="TexShader.h" />
     <ClInclude Include="TGAimage.h" />
   </ItemGroup>

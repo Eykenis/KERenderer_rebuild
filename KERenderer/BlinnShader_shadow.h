@@ -13,13 +13,11 @@ class BlinnShader_shadow :
 {
 private:
     kmath::vec3f Ks, Kd, Ka;
-    std::vector < kmath::vec4f> t_lposition, lposition;
 public:
     float gloss;
     BlinnShader_shadow(Mesh* m, float _gloss = 100.);
-    void vert(int face, int nface);
-    bool frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0);
-    void work(float* buffer);
+    void vert(SubMesh* smesh, int face, int nface);
+    bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0);
     void sutherland_clip(kmath::vec4f clip_plane);
 };
 

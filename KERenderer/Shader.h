@@ -14,7 +14,7 @@ extern kmath::mat4f model, view, proj, lightSpaceMatrix;
 class Shader
 {
 protected:
-   Mesh* mesh;
+    Mesh* mesh;
     kmath::vec4f v1, v2, v3;
     kmath::vec2f uv1, uv2, uv3;
     kmath::vec3f n1, n2, n3;
@@ -31,13 +31,15 @@ protected:
     std::vector < kmath::vec2f> t_uv_position;
     std::vector <float> t_worldzs;
 
+    std::vector < kmath::vec4f> t_lposition, lposition; // for shadow mapping
+
    int i, j;
 protected:
     float max_elevation_angle(float* zbuffer, kmath::vec2f p, kmath::vec2f dir);
     virtual void sutherland_clip(kmath::vec4f clip_plane);
 public:
-	virtual void vert(int face, int nface) = 0;
-	virtual bool frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) = 0;
+	virtual void vert(SubMesh* smesh, int face, int nface) = 0;
+	virtual bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) = 0;
 
     virtual void work(float* buffer);
 };

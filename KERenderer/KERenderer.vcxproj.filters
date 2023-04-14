@@ -48,9 +48,6 @@
     <ClCompile Include="BlinnShader_shadow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="SimpeDepthShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -107,13 +104,13 @@
     <ClInclude Include="BlinnShader_shadow.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ShadowShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="SimpeDepthShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="afterprocess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SubMesh.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

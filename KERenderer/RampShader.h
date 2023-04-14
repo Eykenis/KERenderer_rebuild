@@ -16,7 +16,7 @@ private:
 public:
     float gloss;
     RampShader(Mesh* m, const char* ramp_name = NULL);
-    void vert(int face, int nface);
-    bool frag(kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0);
+    void vert(SubMesh* smesh, int face, int nface);
+    bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0);
 };
 
