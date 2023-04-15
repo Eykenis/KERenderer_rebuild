@@ -47,6 +47,10 @@ public:
 			int mesh_index = -1;
 			std::ifstream mtl;
 			mtl.open("./obj/" + mtlname, std::ifstream::in);
+			if (mtl.fail()) {
+				cout << "Open " << mtlname << " failed." << endl;
+				return;
+			}
 			std::string trash;
 			while (!mtl.eof()) {
 				std::getline(mtl, line);

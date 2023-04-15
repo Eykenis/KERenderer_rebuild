@@ -1,17 +1,10 @@
 #include "BlinnShader_tangent.h"
 
-BlinnShader_tangent::BlinnShader_tangent(Mesh* m, float _gloss) {
-    mesh = m;
-    gloss = _gloss;
-    Ks = kmath::vec3f(0.2f, 0.2f, 0.2f);
-    Ka = kmath::vec3f(0.1f, 0.1f, 0.1f);
-    Kd = kmath::vec3f(1.f, 1.f, 1.f);
-}
 void BlinnShader_tangent::vert(SubMesh* smesh, int face, int nface) {
     kmath::vec4f vec(mesh->vert[smesh->face[face][nface].x], 1.);
     kmath::vec4f norm(mesh->normal[smesh->face[face][nface].z], 0.);
     vec = model * vec;
-    worldz.v[nface] = vec.z;
+    worldPos[nface] = vec;
     vec = proj * view * vec;
     norm = kmath::normalize(model.inverse().transpose() * norm);
     if (nface == 0) v1 = vec, n1 = norm.xyz;
@@ -40,9 +33,9 @@ bool BlinnShader_tangent::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f&
     TGAcolor ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
     for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
     kmath::vec3f halfDir = kmath::normalize(_lightDir - _cameraFront);
-    spec = (prod(lightColor, Ks)) * pow(max(0, norm * halfDir), gloss);
-    diff = (prod(Kd, diff)) * (max(norm * _lightDir, 0.f));
-    ambi = prod(lightColor, Ka);
+    spec = (prod(lightColor, smesh->Ks)) * pow(max(0, norm * halfDir), gloss);
+    diff = prod(prod(smesh->Kd, diff) * max(norm * _lightDir, 0.f), lightColor);
+    ambi = prod(ambientColor, smesh->Ka);
     color = diff + ambi + spec;
     cut_to_0_255(color);
     return true;

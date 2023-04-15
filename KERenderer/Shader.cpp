@@ -87,6 +87,9 @@ void Shader::work(float* buffer) {
             lposition.push_back(lv2);
             lposition.push_back(lv3);
 
+            for (int i = 0; i < 3; ++i)
+                worldPoses.push_back(worldPos[i]);
+
             // Homogeneous Clipping
             sutherland_clip(kmath::vec4f(0, 0, 1, 1));
             sutherland_clip(kmath::vec4f(0, 0, -1, 1));
@@ -151,10 +154,10 @@ void Shader::work(float* buffer) {
                 // backface culling
                 if (crs.z <= 0) continue;
                 float z;
-                for (i = xl; i <= xr; ++i) {
+                for (int i = xl; i <= xr; ++i) {
                     if (i <= 0) continue;
                     if (i >= WINDOW_WIDTH) break;
-                    for (j = yd; j <= yu; ++j) {
+                    for (int j = yd; j <= yu; ++j) {
                         if (j <= 0) continue;
                         if (j >= WINDOW_HEIGHT) break;
                         kmath::vec3f interpolate;

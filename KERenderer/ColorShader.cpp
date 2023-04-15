@@ -1,9 +1,5 @@
 #include "ColorShader.h"
 
-ColorShader::ColorShader(Mesh* m, kmath::vec3f c) {
-    mesh = m;
-    _color = c;
-}
 void ColorShader::vert(SubMesh* smesh, int face, int nface) {
     kmath::vec4f vec(mesh->vert[smesh->face[face][nface].x], 1.);
     vec = proj * view * model * vec;

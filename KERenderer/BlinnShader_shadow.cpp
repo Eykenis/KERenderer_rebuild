@@ -1,19 +1,11 @@
 #include "BlinnShader_shadow.h"
 
-BlinnShader_shadow::BlinnShader_shadow(Mesh* m, float _gloss) {
-    mesh = m;
-    gloss = _gloss;
-    Ks = kmath::vec3f(0.2f, 0.2f, 0.2f);
-    Ka = kmath::vec3f(0.1f, 0.1f, 0.1f);
-    Kd = kmath::vec3f(1.f, 1.f, 1.f);
-}
-
 void BlinnShader_shadow::vert(SubMesh* smesh, int face, int nface) {
     kmath::vec4f vec(mesh->vert[smesh->face[face][nface].x], 1.);
     kmath::vec4f norm(mesh->normal[smesh->face[face][nface].z], 0.);
     //kmath::mat4f m = viewport * proj * view * model;
     vec = model * vec;
-    worldz.v[nface] = vec.z;
+    worldPos[nface] = vec;
     vec = proj * view * vec;
     norm = kmath::normalize(model.inverse().transpose() * norm);
     if (nface == 0) v1 = vec, n1 = norm.xyz, uv1 = mesh->tex_coord[smesh->face[face][0].y];
@@ -43,65 +35,32 @@ bool BlinnShader_shadow::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& 
     if (smesh->diffuse) {
         TGAcolor ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
         for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
-        kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
-        kmath::vec3f halfDir = kmath::normalize(lightDir - cameraFront);
-        spec = (prod(lightColor, Ks)) * pow(max(0, norm * halfDir), gloss);
-        diff = (prod(Kd, diff)) * (max(norm * lightDir, 0.f) * 0.5 + 0.5);
-        ambi = prod(lightColor, Ka);
-        float x = round(doInterpolate(bary, lv1.x, lv2.x, lv3.x));
-        float y = round(doInterpolate(bary, lv1.y, lv2.y, lv3.y));
-        float sz = doInterpolate(bary, lv1.z, lv2.z, lv3.z);
-
-        // 3x3 PCF
-        int shadowCnt = 0, accessibleCnt = 9, p[] = { 0, 0, 1, 0, -1, 0, 0, 1, 0, -1, 1, 1, -1, 1, 1, -1, -1, -1 };
-        for (int i = 0; i < 9; ++i) {
-            int px = x + p[2 * i], py = y + p[2 * i + 1];
-            if (px < 0 || py < 0 || px >= WINDOW_WIDTH || py >= WINDOW_HEIGHT) accessibleCnt--;
-            else if (shadowbuffer[(int)(px * WINDOW_HEIGHT + py)] < sz + magic_num) shadowCnt++;
-        }
-        if (accessibleCnt == 0) shadow = 0.3;
-        else shadow = (1.0 * shadowCnt / accessibleCnt) * 0.7 + 0.3;
-
-        // simple shadow
-        //if (x < 0 || y < 0 || x >= WINDOW_WIDTH || y >= WINDOW_HEIGHT) shadow = .3;
-        //else shadow = (shadowbuffer[(int)(x * WINDOW_HEIGHT + y)] < sz + magic_num) * .7 + .3;
-
-        color = (diff + spec) * shadow + ambi;
     }
-    else color = lightColor * (lightPos * norm);
+    else diff = prod(smesh->Kd, kmath::vec3f(255, 255, 255));
+    kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
+    kmath::vec3f halfDir = kmath::normalize(lightDir - cameraFront);
+    spec = prod(prod(lightColor, smesh->Ks), diff) * pow(max(0, norm * halfDir), gloss);
+    diff = prod(diff * (max(norm * lightDir, 0.f) * 0.5 + 0.5), lightColor);
+    ambi = prod(ambientColor, smesh->Ka);
+    float x = round(doInterpolate(bary, lv1.x, lv2.x, lv3.x));
+    float y = round(doInterpolate(bary, lv1.y, lv2.y, lv3.y));
+    float sz = doInterpolate(bary, lv1.z, lv2.z, lv3.z);
+
+    // 3x3 PCF
+    //int shadowCnt = 0, accessibleCnt = 9, p[] = { 0, 0, 1, 0, -1, 0, 0, 1, 0, -1, 1, 1, -1, 1, 1, -1, -1, -1 };
+    //for (int i = 0; i < 9; ++i) {
+    //    int px = x + p[2 * i], py = y + p[2 * i + 1];
+    //    if (px < 0 || py < 0 || px >= WINDOW_WIDTH || py >= WINDOW_HEIGHT) accessibleCnt--;
+    //    else if (shadowbuffer[(int)(px * WINDOW_HEIGHT + py)] < sz + magic_num) shadowCnt++;
+    //}
+    //if (accessibleCnt == 0) shadow = 0.3;
+    //else shadow = (1.0 * shadowCnt / accessibleCnt) * 0.7 + 0.3;
+
+    // simple shadow
+    if (x < 0 || y < 0 || x >= WINDOW_WIDTH || y >= WINDOW_HEIGHT) shadow = .3;
+    else shadow = (shadowbuffer[(int)(x * WINDOW_HEIGHT + y)] < sz + magic_num) * .7 + .3;
+
+    color = (diff + spec) * shadow + ambi;
     cut_to_0_255(color);
     return true;
-}
-
-void BlinnShader_shadow::sutherland_clip(kmath::vec4f clip_plane) {
-    t_position.clear();
-    t_nm_position.clear();
-    t_uv_position.clear();
-    t_lposition.clear();
-
-    int sz = position.size();
-    for (int i = 0; i < sz; ++i) {
-        int cur_index = i, pre_index = (i - 1 + sz) % sz;
-        kmath::vec4f cur_vert = position[cur_index], pre_vert = position[pre_index];
-        float d1 = clip_plane.x * cur_vert.x + clip_plane.y * cur_vert.y + clip_plane.z * cur_vert.z + clip_plane.w * cur_vert.w;
-        float d2 = clip_plane.x * pre_vert.x + clip_plane.y * pre_vert.y + clip_plane.z * pre_vert.z + clip_plane.w * pre_vert.w;
-        if (d1 * d2 < 0.f) {
-            // calculte interpolation
-            float t = d2 / (d2 - d1);
-            t_position.push_back(cur_vert * t + pre_vert * (1.0f - t));
-            t_nm_position.push_back(nm_position[cur_index] * t + nm_position[pre_index] * (1.0f - t));
-            t_uv_position.push_back(uv_position[cur_index] * t + uv_position[pre_index] * (1.0f - t));
-            t_lposition.push_back(lposition[cur_index] * t + lposition[pre_index] * (1.0f - t));
-        }
-        if (d1 < 0.f) {
-            t_position.push_back(cur_vert);
-            t_nm_position.push_back(nm_position[cur_index]);
-            t_uv_position.push_back(uv_position[cur_index]);
-            t_lposition.push_back(lposition[cur_index]);
-        }
-    }
-    swap(t_position, position);
-    swap(t_nm_position, nm_position);
-    swap(t_uv_position, uv_position);
-    swap(t_lposition, lposition);
 }

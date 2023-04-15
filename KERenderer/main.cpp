@@ -9,11 +9,12 @@
 #include "afterprocess.h"
 
 float xPos, yPos, lastX, lastY; // mouse position
+kmath::vec3f ambientColor(26, 26, 26);
 kmath::mat4f model, view, proj, viewport, lightSpaceMatrix;
 kmath::vec3f cameraPos(0.f, 0.f, 3.f), cameraUp(0.f, 1.f, 0.f), cameraFront(0.f, 0.f, -1.f), cameraRight(1.f, 0.f, 0.f);
 kmath::vec3f lightPos(-1.414f, 0.f, 1.414f); // trans
-kmath::vec3f lightColor(255, 255, 255);
-float        lightIntensity = 1, magic_num = 0.00034;
+kmath::vec3f lightColor(255. / 255, 255. / 255, 255. / 255);
+float        lightIntensity = 1, magic_num = 0.00000;
 
 bool stencil_read = 0, stencil_write = 0;
 float yaw, pitch;
@@ -37,7 +38,7 @@ int main() {
     cin >> rendermode;
 
     window_init(WINDOW_WIDTH, WINDOW_HEIGHT, L"KERenderer");
-    Mesh mesh("./obj/Aiz.obj", "./tex/Aiz_diffuse.tga");
+    Mesh mesh("./obj/Aiz.obj");
     Mesh mesh2("./obj/African.obj", "./tex/African_diffuse.tga", "./tex/African_normal_tangent.tga");
     start = clock();
     
@@ -56,7 +57,7 @@ int main() {
 
     switch (rendermode) {
     case 0:
-        shader1 = new BlinnShader(&mesh);
+        shader1 = new BlinnShader(&mesh, 100.f);
         break;
     case 1:
         shader1 = new BlinnShader_shadow(&mesh);
@@ -125,7 +126,7 @@ int main() {
         if (GetAsyncKeyState(VK_DOWN)) height -= 0.05;
         if (GetAsyncKeyState(VK_LEFT)) depth -= 0.05;
         if (GetAsyncKeyState(VK_RIGHT)) depth += 0.05;
-        //Sleep(16);
+        Sleep(16);
     }
     //system("pause");
     window_destroy();

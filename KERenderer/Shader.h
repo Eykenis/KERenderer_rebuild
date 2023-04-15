@@ -20,24 +20,26 @@ protected:
     kmath::vec3f n1, n2, n3;
     kmath::vec3f t, b, n;
     kmath::vec4f lv1, lv2, lv3;
-    kmath::vec3f worldz;
+    kmath::vec4f worldPos[3];
     std::vector < kmath::vec4f> position;
     std::vector < kmath::vec2f> uv_position;
     std::vector < kmath::vec3f> nm_position;
-    std::vector <float> worldzs;
+    std::vector < kmath::vec4f> worldPoses;
 
     std::vector < kmath::vec4f> t_position;
     std::vector < kmath::vec3f> t_nm_position;
     std::vector < kmath::vec2f> t_uv_position;
-    std::vector <float> t_worldzs;
+    std::vector < kmath::vec4f> t_worldPoses;
 
     std::vector < kmath::vec4f> t_lposition, lposition; // for shadow mapping
 
-   int i, j;
-protected:
+
     float max_elevation_angle(float* zbuffer, kmath::vec2f p, kmath::vec2f dir);
     virtual void sutherland_clip(kmath::vec4f clip_plane);
+
 public:
+    Shader(Mesh* m) : mesh(m) { }
+
 	virtual void vert(SubMesh* smesh, int face, int nface) = 0;
 	virtual bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) = 0;
 

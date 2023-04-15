@@ -1,8 +1,7 @@
 #include "SimpeDepthShader.h"
 
-SimpleDepthShader::SimpleDepthShader(Mesh* m) {
-    mesh = m;
-}
+SimpleDepthShader::SimpleDepthShader(Mesh* m) : Shader(m) { }
+
 void SimpleDepthShader::vert(SubMesh* smesh, int face, int nface) {
     kmath::vec4f vec(mesh->vert[smesh->face[face][nface].x], 1.);
     vec = (lightSpaceMatrix * model) * vec;

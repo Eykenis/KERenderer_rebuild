@@ -1,16 +1,5 @@
 #include "RampShader.h"
 
-RampShader::RampShader(Mesh* m, const char* ramp_name) {
-    mesh = m;
-    Ks = kmath::vec3f(0.2f, 0.2f, 0.2f);
-    Ka = kmath::vec3f(0.1f, 0.1f, 0.1f);
-    Kd = kmath::vec3f(1.f, 1.f, 1.f);
-    ramp = NULL;
-    if (ramp_name) {
-        ramp = new TGAimage;
-        ramp->read_TGA(ramp_name);
-    }
-}
 void RampShader::vert(SubMesh* smesh, int face, int nface) {
     kmath::vec4f vec(mesh->vert[smesh->face[face][nface].x], 1.);
     kmath::vec4f norm(mesh->normal[smesh->face[face][nface].z], 0.);
@@ -33,16 +22,19 @@ bool RampShader::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, i
     }
     kmath::vec3f diff, ambi;
     kmath::vec3f fragPos = (viewport.inverse() * (v1 * bary.x + v2 * bary.y + v3 * bary.z)).xyz;
+    kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
     if (smesh->diffuse) {
-        kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
-        TGAcolor ref = ramp->get((1 - (max(norm * lightDir, 0.f)) * 0.8 + 0.2) * ramp->getWidth(), 1);
-        for (int i = 0; i < 3; ++i) Kd.v[i] = ref.raw[i] / 255.;
-        ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
+        TGAcolor ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
         for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
-        ambi = prod(lightColor, Ka);
-        color = prod(Kd, diff) + ambi;
     }
-    else color = lightColor * (lightPos * norm);
+    else diff = smesh->Kd * 255;
+    if (ramp) {
+        TGAcolor ref = ramp->get((1 - (max(norm * lightDir, 0.f)) * 0.8 + 0.2) * ramp->getWidth(), 1);
+        for (int i = 0; i < 3; ++i) smesh->Kd.v[i] = ref.raw[i] / 255.;
+    }
+    else smesh->Kd = kmath::vec3f(1, 1, 1);
+    ambi = prod(ambientColor, smesh->Ka);
+    color = prod(prod(smesh->Kd, diff), lightColor) + ambi;
     cut_to_0_255(color);
     return true;
 }

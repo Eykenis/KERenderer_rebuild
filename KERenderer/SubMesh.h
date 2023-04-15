@@ -18,8 +18,8 @@ public:
 	SubMesh() : 
 		diffuse(NULL),
 		normal_map(NULL),
-		Ka(),
-		Ks(),
-		Kd(),
+		Ka(1.f, 1.f, 1.f),
+		Ks(1.f, 1.f, 1.f),
+		Kd(1.f, 1.f, 1.f),
 		face() { }
 };
