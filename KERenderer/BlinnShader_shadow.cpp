@@ -47,20 +47,20 @@ bool BlinnShader_shadow::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& 
     float sz = doInterpolate(bary, lv1.z, lv2.z, lv3.z);
 
     // 3x3 PCF
-    //int shadowCnt = 0, accessibleCnt = 9, p[] = { 0, 0, 1, 0, -1, 0, 0, 1, 0, -1, 1, 1, -1, 1, 1, -1, -1, -1 };
-    //for (int i = 0; i < 9; ++i) {
-    //    int px = x + p[2 * i], py = y + p[2 * i + 1];
-    //    if (px < 0 || py < 0 || px >= WINDOW_WIDTH || py >= WINDOW_HEIGHT) accessibleCnt--;
-    //    else if (shadowbuffer[(int)(px * WINDOW_HEIGHT + py)] < sz + magic_num) shadowCnt++;
-    //}
-    //if (accessibleCnt == 0) shadow = 0.3;
-    //else shadow = (1.0 * shadowCnt / accessibleCnt) * 0.7 + 0.3;
+    int shadowCnt = 0, accessibleCnt = 9, p[] = { 0, 0, 1, 0, -1, 0, 0, 1, 0, -1, 1, 1, -1, 1, 1, -1, -1, -1 };
+    for (int i = 0; i < 9; ++i) {
+        int px = x + p[2 * i], py = y + p[2 * i + 1];
+        if (px < 0 || py < 0 || px >= WINDOW_WIDTH || py >= WINDOW_HEIGHT) accessibleCnt--;
+        else if (shadowbuffer[(int)(px * WINDOW_HEIGHT + py)] < sz + magic_num) shadowCnt++;
+    }
+    if (accessibleCnt == 0) shadow = 0.3;
+    else shadow = (1.0 * shadowCnt / accessibleCnt);
 
     // simple shadow
-    if (x < 0 || y < 0 || x >= WINDOW_WIDTH || y >= WINDOW_HEIGHT) shadow = .3;
-    else shadow = (shadowbuffer[(int)(x * WINDOW_HEIGHT + y)] < sz + magic_num) * .7 + .3;
+    //if (x < 0 || y < 0 || x >= WINDOW_WIDTH || y >= WINDOW_HEIGHT) shadow = .3;
+    //else shadow = (shadowbuffer[(int)(x * WINDOW_HEIGHT + y)] < sz + magic_num) * .7 + .3;
 
-    color = (diff + spec) * shadow + ambi;
+    color = (diff + spec) * (shadow * 0.7 + 0.3) + ambi;
     cut_to_0_255(color);
     return true;
 }

@@ -12,9 +12,9 @@ float xPos, yPos, lastX, lastY; // mouse position
 kmath::vec3f ambientColor(26, 26, 26);
 kmath::mat4f model, view, proj, viewport, lightSpaceMatrix;
 kmath::vec3f cameraPos(0.f, 0.f, 3.f), cameraUp(0.f, 1.f, 0.f), cameraFront(0.f, 0.f, -1.f), cameraRight(1.f, 0.f, 0.f);
-kmath::vec3f lightPos(-1.414f, 0.f, 1.414f); // trans
+kmath::vec3f lightPos(-2.828f, 0.f, 2.828f); // trans
 kmath::vec3f lightColor(255. / 255, 255. / 255, 255. / 255);
-float        lightIntensity = 1, magic_num = 0.00000;
+float        lightIntensity = 1, magic_num = 0.0023;
 
 bool stencil_read = 0, stencil_write = 0;
 float yaw, pitch;
@@ -45,11 +45,6 @@ int main() {
     cameraFront = kmath::normalize(cameraFront);
 
     float y = 0.f, height = 0.f, depth = 0.f;
-
-    // matrix transform
-    //proj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
-    //view = kmath::lookat(cameraPos, cameraFront, cameraUp);
-    //model = kmath::model(kmath::vec3f(0.f, 0.f, 0.f), kmath::vec3f(1.f, 1.f, 1.f), kmath::vec3f(0.f, -1.2f, 0.f));
     viewport = kmath::viewport(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
 
     Shader* shader1 = nullptr;
@@ -117,8 +112,6 @@ int main() {
         if (GetAsyncKeyState(VK_F6)) lightPos = (kmath::rotate(0.f, 2.f, 0.f) * kmath::vec4f(lightPos, 1.f)).xyz;
         if (GetAsyncKeyState(VK_F7)) magic_num += 0.0001;
         if (GetAsyncKeyState(VK_F8)) magic_num -= 0.0001;
-        if (GetAsyncKeyState(VK_F9)) cameraFront = (kmath::rotate(0.f, 1.f, 0.f) * kmath::vec4f(cameraFront, 0.f)).xyz;
-        if (GetAsyncKeyState(VK_F10)) cameraFront = (kmath::rotate(0.f, -1.f, 0.f) * kmath::vec4f(cameraFront, 0.f)).xyz;
         if (GetAsyncKeyState(VK_SPACE)) cameraPos.y += 0.05;
         if (GetAsyncKeyState(VK_LSHIFT)) cameraPos.y -= 0.05;
         if (GetAsyncKeyState(VK_ESCAPE)) break;
@@ -156,8 +149,8 @@ void clearframebuffer(unsigned char* framebuffer) {
 }
 
 void lighttexcutting() {
-    kmath::mat4f lightView = kmath::lookat(lightPos * 2, -(lightPos * 2), kmath::vec3f(0.f, 1.f, 0.f));
-    kmath::mat4f lightProj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
+    kmath::mat4f lightView = kmath::lookat(lightPos, -lightPos, kmath::vec3f(0.f, 1.f, 0.f));
+    kmath::mat4f lightProj = kmath::perspective(30.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
     //kmath::mat4f lightProj = kmath::ortho(-1.f, 1.f, -1.f, 1.f, 0.1f, 100.f);
     lightSpaceMatrix = lightProj * lightView;
 }

@@ -54,7 +54,14 @@ void Shader::work(float* buffer) {
     } // clear buffer
     // for every submesh in mesh
     int meshsize = mesh->submesh.size();
-    for (int nMesh = 0; nMesh < meshsize; ++nMesh) {
+
+    bool* vis = new bool[meshsize];
+    std::fill(vis, vis + meshsize, false);
+
+    for (int _nMesh = 0; _nMesh < 2 * meshsize; ++_nMesh) {
+        int nMesh = _nMesh % meshsize;
+        if (vis[nMesh] && mesh->submesh[nMesh].d == 1.0) continue;
+        vis[nMesh] = true;
         // Process every triangle face
         SubMesh* smesh = &mesh->submesh[nMesh];
         for (int k = 0; k < smesh->face.size(); ++k) {
@@ -169,12 +176,14 @@ void Shader::work(float* buffer) {
                         in_count = inTriangle(interpolate);
 
                         if (in_count > 0 && (z = doInterpolate(interpolate, v1.z, v2.z, v3.z)) > buffer[i * WINDOW_HEIGHT + j]) {
-                            buffer[WINDOW_HEIGHT * i + j] = z;
+                            if (smesh->d == 1.0) {
+                                buffer[WINDOW_HEIGHT * i + j] = z;
+                            }
                             int idx = (i * WINDOW_HEIGHT + j);
                             kmath::vec3f color;
                             if (!stencil_read || (stencil_read && stencilbuffer[idx] != 1)) {
                                 if (frag(smesh, interpolate, color, k, i, j)) {
-                                    drawpixel(framebuffer, i, j, color);
+                                    drawpixel(framebuffer, i, j, color, smesh->d);
                                 }
                                 if (stencil_write) stencilbuffer[idx] = 1;
                             }

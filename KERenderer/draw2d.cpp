@@ -13,7 +13,7 @@ void drawLine(unsigned char *framebuffer, int x0, int y0, int x1, int y1, kmath:
     int gy = y0 < y1 ? 1 : -1;
     int p = (dx > dy ? dx : -dy) / 2;
     while (!(x0 == x1 && y0 == y1)) {
-        drawpixel(framebuffer, x0, WINDOW_HEIGHT - y0, color);
+        drawpixel(framebuffer, x0, WINDOW_HEIGHT - y0, color, 1.0);
         int tmp = p;
         if (tmp > -dx) p -= dy, x0 += gx;
         if (tmp < dy)  p += dx, y0 += gy;
@@ -38,9 +38,9 @@ kmath::vec3f barycentric(kmath::vec2f p, kmath::vec2f a, kmath::vec2f b, kmath::
 }
 
 
-void drawpixel(unsigned char* framebuffer, int x, int y, kmath::vec3f color) {
+void drawpixel(unsigned char* framebuffer, int x, int y, kmath::vec3f color, float alpha) {
     int idx = (y * WINDOW_WIDTH + x) * 4;
-    for (int i = 0; i < 3; ++i) framebuffer[idx + i] = color.v[i];
+    for (int i = 0; i < 3; ++i) framebuffer[idx + i] = color.v[i] * alpha + framebuffer[idx + i] * (1 - alpha);
 }
 
 void intensity(unsigned char* framebuffer, int x, int y, kmath::vec3f intense) {

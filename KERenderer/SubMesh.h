@@ -14,6 +14,7 @@ public:
 	TGAimage* diffuse;
 	TGAimage* normal_map;
 	kmath::vec3f Ka, Ks, Kd;
+	float d;
 	std::vector<std::vector<kmath::vec3i>> face;
 	SubMesh() : 
 		diffuse(NULL),
@@ -21,5 +22,6 @@ public:
 		Ka(1.f, 1.f, 1.f),
 		Ks(1.f, 1.f, 1.f),
 		Kd(1.f, 1.f, 1.f),
+		d(1.f),
 		face() { }
 };

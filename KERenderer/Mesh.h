@@ -62,19 +62,23 @@ public:
 					iss >> trash;
 					mesh_place[trash] = mesh_index;
 				}
-				if (!line.compare(0, 3, "Ka ")) {
+				else if (!line.compare(0, 3, "Ka ")) {
 					iss >> trash;
 					iss >> submesh[mesh_index].Ka.v[0] >> submesh[mesh_index].Ka.v[1] >> submesh[mesh_index].Ka.v[2];
 				}
-				if (!line.compare(0, 3, "Ks ")) {
+				else if (!line.compare(0, 3, "Ks ")) {
 					iss >> trash;
 					iss >> submesh[mesh_index].Ks.v[0] >> submesh[mesh_index].Ks.v[1] >> submesh[mesh_index].Ks.v[2];
 				}
-				if (!line.compare(0, 3, "Kd ")) {
+				else if (!line.compare(0, 3, "Kd ")) {
 					iss >> trash;
 					iss >> submesh[mesh_index].Kd.v[0] >> submesh[mesh_index].Kd.v[1] >> submesh[mesh_index].Kd.v[2];
 				}
-				if (!line.compare(0, 7, "map_Kd ")) {
+				else if (!line.compare(0, 2, "d ")) {
+					iss >> trash;
+					iss >> submesh[mesh_index].d;
+				}
+				else if (!line.compare(0, 7, "map_Kd ")) {
 					iss >> trash;
 					submesh[mesh_index].diffuse = new TGAimage;
 					iss >> trash;
