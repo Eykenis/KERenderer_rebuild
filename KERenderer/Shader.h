@@ -15,12 +15,12 @@ class Shader
 {
 protected:
     Mesh* mesh;
-    kmath::vec4f v1, v2, v3;
-    kmath::vec2f uv1, uv2, uv3;
-    kmath::vec3f n1, n2, n3;
     kmath::vec3f t, b, n;
-    kmath::vec4f lv1, lv2, lv3;
+    kmath::vec4f pos[3];
+    kmath::vec2f uv[3];
+    kmath::vec3f worldNormal[3];
     kmath::vec4f worldPos[3];
+    kmath::vec4f lightSpacePos[3];
     std::vector < kmath::vec4f> position;
     std::vector < kmath::vec2f> uv_position;
     std::vector < kmath::vec3f> nm_position;

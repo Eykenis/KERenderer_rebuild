@@ -39,7 +39,8 @@ int main() {
 
     window_init(WINDOW_WIDTH, WINDOW_HEIGHT, L"KERenderer");
     Mesh mesh("./obj/Aiz.obj");
-    Mesh mesh2("./obj/African.obj", "./tex/African_diffuse.tga", "./tex/African_normal_tangent.tga");
+    //Mesh mesh("./obj/back.obj", "./tex/back.tga");
+    Mesh mesh2("./obj/african.obj", "./tex/african_diffuse.tga", "./tex/african_normal_tangent.tga");
     start = clock();
     
     cameraFront = kmath::normalize(cameraFront);
@@ -68,7 +69,7 @@ int main() {
         shader1 = new TexShader(&mesh);
         break;
     case 5:
-        shader1 = new ColorShader(&mesh, kmath::vec3f(150.f, 150.f, 150.f));
+        shader1 = new ColorShader(&mesh, kmath::vec3f(250.f, 136.f, 150.f));
         break;
     default:
         break;
@@ -119,7 +120,7 @@ int main() {
         if (GetAsyncKeyState(VK_DOWN)) height -= 0.05;
         if (GetAsyncKeyState(VK_LEFT)) depth -= 0.05;
         if (GetAsyncKeyState(VK_RIGHT)) depth += 0.05;
-        Sleep(16);
+        Sleep(66);
     }
     //system("pause");
     window_destroy();

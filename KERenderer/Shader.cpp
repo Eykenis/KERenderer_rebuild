@@ -2,7 +2,7 @@
 
 float Shader::max_elevation_angle(float* zbuffer, kmath::vec2f p, kmath::vec2f dir) {
     float maxangle = 0;
-    for (float t = 0.; t < 1000.; t += 10.) {
+    for (float t = 0.; t < 1000.; t += 100.) {
         kmath::vec2f cur = p + dir * t;
         if (cur.x >= WINDOW_WIDTH || cur.y >= WINDOW_HEIGHT || cur.x < 0 || cur.y < 0) return maxangle;
 
@@ -18,6 +18,7 @@ void Shader::sutherland_clip(kmath::vec4f clip_plane) {
     t_nm_position.clear();
     t_uv_position.clear();
     t_lposition.clear();
+    t_worldPoses.clear();
 
     int sz = position.size();
     for (int i = 0; i < sz; ++i) {
@@ -32,18 +33,21 @@ void Shader::sutherland_clip(kmath::vec4f clip_plane) {
             t_nm_position.push_back(nm_position[cur_index] * t + nm_position[pre_index] * (1.0f - t));
             t_uv_position.push_back(uv_position[cur_index] * t + uv_position[pre_index] * (1.0f - t));
             t_lposition.push_back(lposition[cur_index] * t + lposition[pre_index] * (1.0f - t));
+            t_worldPoses.push_back(worldPoses[cur_index] * t + worldPoses[pre_index] * (1.0f - t));
         }
         if (d1 < 0.f) {
             t_position.push_back(cur_vert);
             t_nm_position.push_back(nm_position[cur_index]);
             t_uv_position.push_back(uv_position[cur_index]);
             t_lposition.push_back(lposition[cur_index]);
+            t_worldPoses.push_back(worldPoses[cur_index]);
         }
     }
     swap(t_position, position);
     swap(t_nm_position, nm_position);
     swap(t_uv_position, uv_position);
     swap(t_lposition, lposition);
+    swap(t_worldPoses, worldPoses);
 }
 
 void Shader::work(float* buffer) {
@@ -65,10 +69,10 @@ void Shader::work(float* buffer) {
         // Process every triangle face
         SubMesh* smesh = &mesh->submesh[nMesh];
         for (int k = 0; k < smesh->face.size(); ++k) {
-            uv1 = mesh->tex_coord[smesh->face[k][0].y];
-            uv2 = mesh->tex_coord[smesh->face[k][1].y];
-            uv3 = mesh->tex_coord[smesh->face[k][2].y];
-            kmath::getTBN(t, b, mesh->vert[smesh->face[k][0].x], mesh->vert[smesh->face[k][1].x], mesh->vert[smesh->face[k][2].x], uv1, uv2, uv3);
+            for (int i = 0; i < 3; ++i) {
+                uv[i] = mesh->tex_coord[smesh->face[k][i].y];
+            }
+            kmath::getTBN(t, b, mesh->vert[smesh->face[k][0].x], mesh->vert[smesh->face[k][1].x], mesh->vert[smesh->face[k][2].x], uv[0], uv[1], uv[2]);
             vert(smesh, k, 0);
             vert(smesh, k, 1);
             vert(smesh, k, 2);
@@ -77,25 +81,15 @@ void Shader::work(float* buffer) {
             nm_position.clear();
             uv_position.clear();
             lposition.clear();
+            worldPoses.clear();
 
-            position.push_back(v1);
-            position.push_back(v2);
-            position.push_back(v3);
-
-            nm_position.push_back(n1);
-            nm_position.push_back(n2);
-            nm_position.push_back(n3);
-
-            uv_position.push_back(uv1);
-            uv_position.push_back(uv2);
-            uv_position.push_back(uv3);
-
-            lposition.push_back(lv1);
-            lposition.push_back(lv2);
-            lposition.push_back(lv3);
-
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < 3; ++i) {
+                position.push_back(pos[i]);
+                nm_position.push_back(worldNormal[i]);
+                uv_position.push_back(uv[i]);
+                lposition.push_back(lightSpacePos[i]);
                 worldPoses.push_back(worldPos[i]);
+            }
 
             // Homogeneous Clipping
             sutherland_clip(kmath::vec4f(0, 0, 1, 1));
@@ -137,26 +131,20 @@ void Shader::work(float* buffer) {
             }
 
             for (int nv = 0; nv < num_vertex - 2; ++nv) {
-                int idx1 = 0, idx2 = nv + 1, idx3 = nv + 2;
+                int idx[3] = { 0, nv + 1, nv + 2 };
+                for (int i = 0; i < 3; ++i) {
+                    pos[i] = position[idx[i]];
+                    uv[i] = uv_position[idx[i]];
+                    lightSpacePos[i] = lposition[idx[i]];
+                    worldNormal[i] = nm_position[idx[i]];
+                    worldPos[i] = worldPoses[idx[i]];
+                }
 
-                v1 = position[idx1];
-                n1 = nm_position[idx1];
-                uv1 = uv_position[idx1];
-                lv1 = lposition[idx1];
-                v2 = position[idx2];
-                n2 = nm_position[idx2];
-                uv2 = uv_position[idx2];
-                lv2 = lposition[idx2];
-                v3 = position[idx3];
-                n3 = nm_position[idx3];
-                uv3 = uv_position[idx3];
-                lv3 = lposition[idx3];
-
-                float xl = min(v1.x, min(v2.x, v3.x)), xr = max(v1.x, max(v2.x, v3.x));
-                float yd = min(v1.y, min(v2.y, v3.y)), yu = max(v1.y, max(v2.y, v3.y));
+                float xl = min(pos[0].x, min(pos[1].x, pos[2].x)), xr = max(pos[0].x, max(pos[1].x, pos[2].x));
+                float yd = min(pos[0].y, min(pos[1].y, pos[2].y)), yu = max(pos[0].y, max(pos[1].y, pos[2].y));
                 if ((xr <= 0 || xl >= WINDOW_WIDTH) || (yu <= 0 || yd >= WINDOW_HEIGHT)) continue;
-                kmath::vec4f v21 = v2 - v1;
-                kmath::vec4f v32 = v3 - v1;
+                kmath::vec4f v21 = pos[1] - pos[0];
+                kmath::vec4f v32 = pos[2] - pos[0];
                 kmath::vec3f crs = cross(v21.xyz, v32.xyz);
                 // backface culling
                 if (crs.z <= 0) continue;
@@ -168,14 +156,12 @@ void Shader::work(float* buffer) {
                         if (j <= 0) continue;
                         if (j >= WINDOW_HEIGHT) break;
                         kmath::vec3f interpolate;
-                        int in_count = 0;
-                        bool inflag[4] = { 0, 0, 0, 0 };
 
-                        interpolate = barycentric(kmath::vec2f(i, j), kmath::vec2f(v1.x, v1.y), kmath::vec2f(v2.x, v2.y), kmath::vec2f(v3.x, v3.y));
+                        interpolate = barycentric(kmath::vec2f(i, j), kmath::vec2f(pos[0].x, pos[0].y), kmath::vec2f(pos[1].x, pos[1].y), kmath::vec2f(pos[2].x, pos[2].y));
 
-                        in_count = inTriangle(interpolate);
+                        bool inTri = inTriangle(interpolate);
 
-                        if (in_count > 0 && (z = doInterpolate(interpolate, v1.z, v2.z, v3.z)) > buffer[i * WINDOW_HEIGHT + j]) {
+                        if (inTri > 0 && (z = doInterpolate(interpolate, pos[0].z, pos[1].z, pos[2].z)) > buffer[i * WINDOW_HEIGHT + j]) {
                             if (smesh->d == 1.0) {
                                 buffer[WINDOW_HEIGHT * i + j] = z;
                             }
@@ -195,16 +181,25 @@ void Shader::work(float* buffer) {
         //delete smesh;
     }
     // SSAO
-    //for (int x = 0; x <WINDOW_WIDTH; x++) {
-    //    for (int y = 0; y < WINDOW_HEIGHT; y++) {
-    //        if (zbuffer[x * WINDOW_HEIGHT + y] < -1e5) continue;
-    //        float total = 0;
-    //        for (float a = 0; a < 3.14 * 2 - 1e-4; a += 3.14 / 4) {
-    //            total += 3.14 / 2 - max_elevation_angle(zbuffer, kmath::vec2f(x, y), kmath::vec2f(cos(a), sin(a)));
-    //        }
-    //        total /= (3.14 / 2) * 8;
-    //        total = pow(total, 1000.f);
-    //        intensity(framebuffer, x, y, kmath::vec3f(total, total, total));
-    //    }
-    //}
+    for (int x = 0; x <WINDOW_WIDTH; x++) {
+        for (int y = 0; y < WINDOW_HEIGHT; y++) {
+            if (zbuffer[x * WINDOW_HEIGHT + y] < -1e5) continue;
+            float total = 0;
+            int cnt = 0;
+            for (float a = 0; a < 6.28; a += 6.28 / 4) {
+                for (float b = 0; b < 6.28; b += 6.28 / 4) {
+                    for (float c = 0.33; c <= 1; c += 0.33) {
+                        float radius = 12;
+                        kmath::vec3f vec(x + radius * cos(b) * cos(a) * c, y + radius * cos(b) * sin(a) * c, zbuffer[x * WINDOW_HEIGHT + y] + radius * sin(b) * c);
+                        if (vec.x >= WINDOW_WIDTH || vec.y >= WINDOW_HEIGHT || vec.x < 0 || vec.y < 0) continue;
+                        if (vec.z <= zbuffer[(int)vec.x * WINDOW_HEIGHT + (int)vec.y]) total++;
+                        cnt++;
+                    }
+                }
+            }
+            total = min(1, max(0, (cnt - total) / (cnt / 2)));
+            total = log2(total + 1);
+            intensity(framebuffer, x, y, kmath::vec3f(total, total, total));
+        }
+    }
 }

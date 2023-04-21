@@ -7,21 +7,20 @@ void BlinnShader_tangent::vert(SubMesh* smesh, int face, int nface) {
     worldPos[nface] = vec;
     vec = proj * view * vec;
     norm = kmath::normalize(model.inverse().transpose() * norm);
-    if (nface == 0) v1 = vec, n1 = norm.xyz;
-    else if (nface == 1) v2 = vec, n2 = norm.xyz;
-    else if (nface == 2) v3 = vec, n3 = norm.xyz;
+    pos[nface] = vec;
+    uv[nface] = mesh->tex_coord[smesh->face[face][nface].y];
+    worldNormal[nface] = norm.xyz;
     kmath::vec3f N = kmath::normalize(norm.xyz);
     kmath::vec3f T = kmath::normalize(t - N * (t * N));
     kmath::vec3f B = kmath::normalize(cross(N, T));
     TBN = kmath::mat4f::identical();
     for (int i = 0; i < 3; ++i) TBN.m[0][i] = T.v[i], TBN.m[1][i] = B.v[i], TBN.m[2][i] = N.v[i];
-    kmath::vec4f vs[] = { v1, v2, v3 };
     t_lightDir[nface] = kmath::normalize((TBN * kmath::vec4f(lightPos, 0.f)).xyz);
     t_cameraFront[nface] = kmath::normalize((TBN * kmath::vec4f(cameraFront, 0.f)).xyz);
 }
 bool BlinnShader_tangent::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i, int j) {
-    float tex_u = uv1.x * bary.x + uv2.x * bary.y + uv3.x * bary.z;
-    float tex_v = uv1.y * bary.x + uv2.y * bary.y + uv3.y * bary.z;
+    float tex_u = uv[0].x * bary.x + uv[1].x * bary.y + uv[2].x * bary.z;
+    float tex_v = uv[0].y * bary.x + uv[1].y * bary.y + uv[2].y * bary.z;
     kmath::vec3f _lightDir = t_lightDir[0] * bary.x + t_lightDir[1] * bary.y + t_lightDir[2] * bary.z;
     kmath::vec3f _cameraFront = t_cameraFront[0] * bary.x + t_cameraFront[1] * bary.y + t_cameraFront[2] * bary.z;
     _lightDir = kmath::normalize(_lightDir), _cameraFront = kmath::normalize(_cameraFront);
@@ -33,7 +32,7 @@ bool BlinnShader_tangent::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f&
     TGAcolor ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
     for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
     kmath::vec3f halfDir = kmath::normalize(_lightDir - _cameraFront);
-    spec = (prod(lightColor, smesh->Ks)) * pow(max(0, norm * halfDir), gloss);
+    spec = prod(prod(lightColor, smesh->Ks), diff) * pow(max(0, norm * halfDir), gloss);
     diff = prod(prod(smesh->Kd, diff) * max(norm * _lightDir, 0.f), lightColor);
     ambi = prod(ambientColor, smesh->Ka);
     color = diff + ambi + spec;
