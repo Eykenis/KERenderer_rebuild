@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Shaders.h"
 #include "afterprocess.h"
+#include "fftocean.h"
 
 float xPos, yPos, lastX, lastY; // mouse position
 kmath::vec3f ambientColor(26, 26, 26);
@@ -32,8 +33,11 @@ void mouse_process();
 
 int main() {
     clock_t start, end;
+
+    doFFTOcean();
+
     printf("Enter:\n 0 - Blinn Shading\t1 - Blinn Shading with Shadow\t2 - Blinn Shading with Tangent-Space Normal Map\n");
-    printf("3 - Ramp Shading\t4 - Only UV Texture\t5 - Color Shading\n");
+    printf("3 - Ramp Shading\t4 - Only UV Texture\t5 - Color Shading\t6 - FFT Ocean\n");
     int rendermode = 0;
     cin >> rendermode;
 
@@ -41,6 +45,8 @@ int main() {
     Mesh mesh("./obj/Aiz.obj");
     //Mesh mesh("./obj/back.obj", "./tex/back.tga");
     Mesh mesh2("./obj/african.obj", "./tex/african_diffuse.tga", "./tex/african_normal_tangent.tga");
+
+    Mesh fftmesh = doFFTOcean();
     start = clock();
     
     cameraFront = kmath::normalize(cameraFront);
@@ -53,7 +59,7 @@ int main() {
 
     switch (rendermode) {
     case 0:
-        shader1 = new BlinnShader(&mesh, 100.f);
+        shader1 = new BlinnShader(&mesh, 100.f, true);
         break;
     case 1:
         shader1 = new BlinnShader_shadow(&mesh);
@@ -71,6 +77,8 @@ int main() {
     case 5:
         shader1 = new ColorShader(&mesh, kmath::vec3f(250.f, 136.f, 150.f));
         break;
+    case 6:
+        shader1 = new ColorShader(&fftmesh, kmath::vec3f(250.f, 136.f, 150.f));
     default:
         break;
     }
@@ -85,7 +93,7 @@ int main() {
             start = clock();
             fps = 0;
         }
-        proj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 10.0f);
+        proj = kmath::perspective(45.f, 1.f * WINDOW_WIDTH / WINDOW_HEIGHT, 0.1f, 100.0f);
         view = kmath::lookat(cameraPos, kmath::normalize(cameraFront), cameraUp);
         model = kmath::model(kmath::vec3f(0.f, 30.f + y, 0.f), kmath::vec3f(1.f, 1.f, 1.f), kmath::vec3f(0.f, -0.79f + height, 1.f + depth));
         
@@ -120,9 +128,21 @@ int main() {
         if (GetAsyncKeyState(VK_DOWN)) height -= 0.05;
         if (GetAsyncKeyState(VK_LEFT)) depth -= 0.05;
         if (GetAsyncKeyState(VK_RIGHT)) depth += 0.05;
-        Sleep(66);
+        //Sleep(33);
     }
     //system("pause");
+    TGAimage* result = new TGAimage(WINDOW_HEIGHT, WINDOW_WIDTH);
+    for (int i = 0; i < WINDOW_HEIGHT; i++)
+    {
+        for (int j = 0; j < WINDOW_WIDTH; j++)
+        {
+            int index = ((WINDOW_HEIGHT - i - 1) * WINDOW_WIDTH + j) * 4;
+            int idx = (i * WINDOW_WIDTH + j) * 4;
+            TGAcolor color(framebuffer[index], framebuffer[index + 1], framebuffer[index + 2]);
+            result->setColor(i, j, color);
+        }
+    }
+    result->write_TGA("./tex/result.tga");
     window_destroy();
 	return 0;
 }

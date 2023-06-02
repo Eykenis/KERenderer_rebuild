@@ -57,6 +57,9 @@
     <ClCompile Include="Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="fftocean.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h">
@@ -111,6 +114,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SubMesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fftocean.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

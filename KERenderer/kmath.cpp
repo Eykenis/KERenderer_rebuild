@@ -7,11 +7,23 @@ namespace kmath {
 	float module(const vec3f& v) {
 		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
+	vec2f normalize(const vec2f& v) {
+		vec2f ret(v);
+		float mod = module(v);
+		ret.x /= mod, ret.y /= mod;
+		return ret;
+	}
 	vec3f normalize(const vec3f& v) {
 		vec3f ret(v);
 		float mod = module(v);
 		ret.x /= mod, ret.y /= mod, ret.z /= mod;
 		return ret;
+	}
+	vec2f prod(const vec2f& v1, const vec2f& v2) {
+		return vec2f(v1.x * v2.x, v1.y * v2.y);
+	}
+	vec2f complexm(const vec2f& v1, const vec2f& v2) {
+		return vec2f(v1.x * v2.x - v1.y * v2.y, v1.x * v2.y + v1.y * v2.x);
 	}
 	vec3f prod(const vec3f& v1, const vec3f& v2) { // do product for each dimension of two vec
 		return vec3f(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);

@@ -21,6 +21,10 @@ protected:
     kmath::vec3f worldNormal[3];
     kmath::vec4f worldPos[3];
     kmath::vec4f lightSpacePos[3];
+
+    bool render_to_texture;
+    std::vector<TGAimage*> target;
+
     std::vector < kmath::vec4f> position;
     std::vector < kmath::vec2f> uv_position;
     std::vector < kmath::vec3f> nm_position;
@@ -38,7 +42,13 @@ protected:
     virtual void sutherland_clip(kmath::vec4f clip_plane);
 
 public:
-    Shader(Mesh* m) : mesh(m) { }
+    Shader(Mesh* m, bool render = true) : mesh(m), render_to_texture(render) {
+        if (!render) return;
+        target.resize(m->submesh.size());
+        for (int i = 0; i < target.size(); ++i) {
+            target[i] = new TGAimage(m->submesh[i].diffuse->getWidth(), m->submesh[i].diffuse->getHeight(), m->submesh[i].diffuse->getBpp());
+        }
+    }
 
 	virtual void vert(SubMesh* smesh, int face, int nface) = 0;
 	virtual bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) = 0;

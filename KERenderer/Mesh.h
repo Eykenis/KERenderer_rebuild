@@ -16,6 +16,8 @@ public:
 	std::vector<SubMesh> submesh;
 	std::map<std::string, int> mesh_place;
 
+	Mesh() = default;
+
 	Mesh(const char* filename, const char* diffuse_name = NULL, const char* normal_name = NULL) {
 		std::ifstream in;
 		in.open(filename, std::ifstream::in);

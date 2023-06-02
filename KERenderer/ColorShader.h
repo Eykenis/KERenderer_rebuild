@@ -12,7 +12,7 @@ class ColorShader :
 private:
     kmath::vec3f _color;
 public:
-    ColorShader(Mesh* m, kmath::vec3f c) : Shader(m), _color(c) { };
+    ColorShader(Mesh* m, kmath::vec3f c) : Shader(m, false), _color(c) { };
     void vert(SubMesh* smesh, int face, int nface);
     bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0);
 };

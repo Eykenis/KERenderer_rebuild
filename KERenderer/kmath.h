@@ -60,6 +60,9 @@ namespace kmath {
 		const vec2<T> operator - () const {
 			return vec2<T>(-this->x, -this->y);
 		}
+		T& operator [] (int index) {
+			return this->v[index];
+		}
 	};
 
 	template<typename T> struct vec3 {
@@ -115,6 +118,10 @@ namespace kmath {
 
 		const vec3<T> operator - () const {
 			return vec3<T>(-this->x, -this->y, -this->z);
+		}
+
+		T& operator [] (int index) {
+			return this->v[index];
 		}
 	};
 
@@ -176,6 +183,10 @@ namespace kmath {
 
 		const vec4<T>& operator - () {
 			return vec4<T>(-this->x, -this->y, -this->z, -this->w);
+		}
+
+		T& operator [] (int index) {
+			return this->v[index];
 		}
 	};
 
@@ -383,7 +394,10 @@ namespace kmath {
 	}
 	float module(const vec2f&);
 	float module(const vec3f&);
+	vec2f normalize(const vec2f&);
 	vec3f normalize(const vec3f&);
+	vec2f prod(const vec2f&, const vec2f&);
+	vec2f complexm(const vec2f&, const vec2f&);
 	vec3f prod(const vec3f&, const vec3f&);
 	float module(const vec4f&);
 	vec4f normalize(const vec4f&);

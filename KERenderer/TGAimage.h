@@ -51,6 +51,7 @@ public:
 	bool flip_vertically();
 	int getWidth() { return width; }
 	int getHeight() { return height; }
+	int getBpp() { return bytespp;  }
 };
 #pragma pack(push, 1)
 

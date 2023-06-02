@@ -13,7 +13,9 @@ class BlinnShader :
 {
 public:
     float gloss;
-    BlinnShader(Mesh* m, float _gloss = 100.) : Shader(m), gloss(_gloss) { };
+    BlinnShader(Mesh* m, float _gloss = 100., bool render = false) : Shader(m, render), gloss(_gloss) {
+
+    }
     void vert(SubMesh* smesh, int face, int nface);
     bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0);
 };

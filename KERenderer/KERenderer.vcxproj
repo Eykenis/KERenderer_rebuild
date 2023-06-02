@@ -144,6 +144,7 @@
     <ClCompile Include="BlinnShader_shadow.cpp" />
     <ClCompile Include="BlinnShader_tangent.cpp" />
     <ClCompile Include="ColorShader.cpp" />
+    <ClCompile Include="fftocean.cpp" />
     <ClCompile Include="RampShader.cpp" />
     <ClCompile Include="draw2d.cpp" />
     <ClCompile Include="kmath.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="BlinnShader_shadow.h" />
     <ClInclude Include="BlinnShader_tangent.h" />
     <ClInclude Include="ColorShader.h" />
+    <ClInclude Include="fftocean.h" />
     <ClInclude Include="RampShader.h" />
     <ClInclude Include="draw2d.h" />
     <ClInclude Include="kmath.h" />
