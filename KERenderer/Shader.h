@@ -50,6 +50,10 @@ public:
         }
     }
 
+    void resetMesh(Mesh* m) {
+        mesh = m;
+    }
+
 	virtual void vert(SubMesh* smesh, int face, int nface) = 0;
 	virtual bool frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, int nface, int i = 0, int j = 0) = 0;
 

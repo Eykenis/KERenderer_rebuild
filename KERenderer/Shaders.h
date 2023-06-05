@@ -6,3 +6,4 @@
 #include "TexShader.h"
 #include "SimpeDepthShader.h"
 #include "BlinnShader_shadow.h"
+#include "OceanShader.h"

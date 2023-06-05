@@ -13,7 +13,6 @@ std::vector<std::vector<float> > getGaussianRand(int width, int height) {
 			float s = distrx(gen);
 			ret[i][j] = s;
 		}
-		std::cout << std::endl;
 	}
 	return ret;
 }
@@ -99,7 +98,36 @@ void ifft2(std::vector<std::vector<kmath::vec2f> >& mat) {
 	}
 }
 
-Mesh doFFTOcean() {
+kmath::vec3f calculateNormal(std::vector<std::vector<kmath::vec2f> >& heightspectrogram, int i, int j) {
+	kmath::vec3f tangentx, tangenty;
+	if (i == 0) {
+		float h1 = kmath::module(heightspectrogram[i + 1][j]), h = kmath::module(heightspectrogram[i][j]);
+		tangenty = kmath::vec3f(1, h1 - h, 0);
+	}
+	else if (i == OCEAN_SIZE - 1) {
+		float h_1 = kmath::module(heightspectrogram[i - 1][j]), h = kmath::module(heightspectrogram[i][j]);
+		tangenty = kmath::vec3f(1, h - h_1, 0);
+	}
+	else {
+		float h1 = kmath::module(heightspectrogram[i + 1][j]), h_1 = kmath::module(heightspectrogram[i - 1][j]);
+		tangenty = kmath::vec3f(2, h1 - h_1, 0);
+	}
+	if (j == 0) {
+		float h1 = kmath::module(heightspectrogram[i][j + 1]), h = kmath::module(heightspectrogram[i][j]);
+		tangentx = kmath::vec3f(0, h1 - h, 1);
+	}
+	else if (j == OCEAN_SIZE - 1) {
+		float h_1 = kmath::module(heightspectrogram[i][j - 1]), h = kmath::module(heightspectrogram[i][j]);
+		tangentx = kmath::vec3f(0, h - h_1, 1);
+	}
+	else {
+		float h1 = kmath::module(heightspectrogram[i][j + 1]), h_1 = kmath::module(heightspectrogram[i][j - 1]);
+		tangentx = kmath::vec3f(0, h1 - h_1, 2);
+	}
+	return kmath::normalize(kmath::cross(tangentx, tangenty));
+}
+
+Mesh doFFTOcean(float t) {
 	std::vector<std::vector<float> > gaussx = getGaussianRand(OCEAN_SIZE, OCEAN_SIZE);
 	std::vector<std::vector<float> > gaussy = getGaussianRand(OCEAN_SIZE, OCEAN_SIZE);
 	std::vector<std::vector<kmath::vec2f> > heightspectrogram;
@@ -107,7 +135,7 @@ Mesh doFFTOcean() {
 	for (int i = 0; i < OCEAN_SIZE; ++i) {
 		heightspectrogram[i].resize(OCEAN_SIZE);
 		for (int j = 0; j < OCEAN_SIZE; ++j) {
-			heightspectrogram[i][j] = getHeightSpectrum(kmath::vec2f(i, j), 0, gaussx, gaussy);
+			heightspectrogram[i][j] = getHeightSpectrum(kmath::vec2f(i, j), t, gaussx, gaussy);
 		}
 	}
 
@@ -121,20 +149,23 @@ Mesh doFFTOcean() {
 	fftMesh.submesh.push_back(SubMesh());
 	for (int i = 0; i < OCEAN_SIZE; ++i) {
 		for (int j = 0; j < OCEAN_SIZE; ++j) {
-			float y = kmath::module(heightspectrogram[i][j]) / 50;
-			fftMesh.vert.push_back(kmath::vec3f(i, y, j));
+			float y = kmath::module(heightspectrogram[i][j]) / (30 / OCEAN_SCALE);
+			fftMesh.vert.push_back(kmath::vec3f(i * OCEAN_SCALE, y, j * OCEAN_SCALE));
+			fftMesh.normal.push_back(calculateNormal(heightspectrogram, i, j));
 		}
 	}
 	for (int i = 0; i + 1 < OCEAN_SIZE; ++i) {
 		for (int j = 0; j + 1 < OCEAN_SIZE; ++j) {
 			int idx = i * OCEAN_SIZE + j;
-			fftMesh.submesh[0].face.push_back({ {idx, 0, 0}, {idx + 1, 0, 0}, {idx + OCEAN_SIZE, 0, 0} });
+			fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1, 0, idx + 1}, {idx + OCEAN_SIZE, 0, idx + OCEAN_SIZE} });
 		}
 	}
 	for (int i = 1; i < OCEAN_SIZE; ++i) {
 		for (int j = 0; j + 1 < OCEAN_SIZE; ++j) {
 			int idx = i * OCEAN_SIZE + j;
-			fftMesh.submesh[0].face.push_back({ {idx, 0, 0}, {idx + 1 - OCEAN_SIZE, 0, 0}, {idx + 1, 0, 0} });
+			// trans
+			//fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1, 0, idx + 1}, {idx + 1 - OCEAN_SIZE, 0, idx + 1 - OCEAN_SIZE} });
+			fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1 - OCEAN_SIZE, 0, idx + 1 - OCEAN_SIZE}, {idx + 1, 0, idx + 1} });
 		}
 	}
 	return fftMesh;
