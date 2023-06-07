@@ -13,7 +13,7 @@ float xPos, yPos, lastX, lastY; // mouse position
 kmath::vec3f ambientColor(26, 26, 26);
 kmath::mat4f model, view, proj, viewport, lightSpaceMatrix;
 kmath::vec3f cameraPos(0.f, 0.f, 3.f), cameraUp(0.f, 1.f, 0.f), cameraFront(0.f, 0.f, -1.f), cameraRight(1.f, 0.f, 0.f);
-kmath::vec3f lightPos(0.0f, 1.0f, 0.0f); // trans
+kmath::vec3f lightPos(-2.707f, 0.0f, 2.707f); // trans
 kmath::vec3f lightColor(255. / 255, 255. / 255, 255. / 255);
 float        lightIntensity = 1, magic_num = 0.0023;
 
@@ -44,7 +44,8 @@ int main() {
     //Mesh mesh("./obj/back.obj", "./tex/back.tga");
     Mesh mesh2("./obj/african.obj", "./tex/african_diffuse.tga", "./tex/african_normal_tangent.tga");
 
-    Mesh fftmesh = doFFTOcean(0);
+    Mesh fftmesh = FFTInit();
+    doFFTOcean(0, fftmesh);
     start = clock();
     
     cameraFront = kmath::normalize(cameraFront);
@@ -57,7 +58,7 @@ int main() {
 
     switch (rendermode) {
     case 0:
-        shader1 = new BlinnShader(&mesh, 100.f, true);
+        shader1 = new BlinnShader(&mesh, 100.f, false);
         break;
     case 1:
         shader1 = new BlinnShader_shadow(&mesh);
@@ -76,7 +77,7 @@ int main() {
         shader1 = new ColorShader(&mesh, kmath::vec3f(250.f, 136.f, 150.f));
         break;
     case 6:
-        shader1 = new OceanShader(&fftmesh);
+        shader1 = new OceanShader(&fftmesh, 50.f);
     default:
         break;
     }
@@ -87,8 +88,10 @@ int main() {
     //30.f per sec
     while (!window->is_close) {
         cur_time = static_cast<float>(clock()) / CLOCKS_PER_SEC;
-        fftmesh = doFFTOcean(cur_time);
-        shader1->resetMesh(&fftmesh);
+        if (rendermode == 6) {
+            doFFTOcean(cur_time, fftmesh);
+            shader1->resetMesh(&fftmesh);
+        }
         fps++;
         end = clock();
         if (end - start > CLOCKS_PER_SEC) {
@@ -112,10 +115,10 @@ int main() {
         window_draw(framebuffer);
         mouse_process();
         msg_dispatch();
-        if (GetAsyncKeyState(0x41)) cameraPos = cameraPos + cameraRight ;
-        if (GetAsyncKeyState(0x44)) cameraPos = cameraPos - cameraRight ;
-        if (GetAsyncKeyState(0x57)) cameraPos = cameraPos + cameraFront ;
-        if (GetAsyncKeyState(0x53)) cameraPos = cameraPos - cameraFront ;
+        if (GetAsyncKeyState(0x41)) cameraPos = cameraPos + cameraRight * 0.1;
+        if (GetAsyncKeyState(0x44)) cameraPos = cameraPos - cameraRight * 0.1;
+        if (GetAsyncKeyState(0x57)) cameraPos = cameraPos + cameraFront * 0.1;
+        if (GetAsyncKeyState(0x53)) cameraPos = cameraPos - cameraFront * 0.1;
         if (GetAsyncKeyState(VK_F1)) y -= 2;
         if (GetAsyncKeyState(VK_F2)) y += 2;
         if (GetAsyncKeyState(VK_F3)) lightIntensity += 0.05;
@@ -124,8 +127,8 @@ int main() {
         if (GetAsyncKeyState(VK_F6)) lightPos = (kmath::rotate(0.f, 2.f, 0.f) * kmath::vec4f(lightPos, 1.f)).xyz;
         if (GetAsyncKeyState(VK_F7)) magic_num += 0.0001;
         if (GetAsyncKeyState(VK_F8)) magic_num -= 0.0001;
-        if (GetAsyncKeyState(VK_SPACE)) cameraPos.y += 0.5;
-        if (GetAsyncKeyState(VK_LSHIFT)) cameraPos.y -= 0.5;
+        if (GetAsyncKeyState(VK_SPACE)) cameraPos.y += 0.2;
+        if (GetAsyncKeyState(VK_LSHIFT)) cameraPos.y -= 0.2;
         if (GetAsyncKeyState(VK_ESCAPE)) break;
         if (GetAsyncKeyState(VK_UP)) height += 0.05;
         if (GetAsyncKeyState(VK_DOWN)) height -= 0.05;

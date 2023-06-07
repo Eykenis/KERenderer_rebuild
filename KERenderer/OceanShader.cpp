@@ -29,11 +29,11 @@ bool OceanShader::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, 
         TGAcolor ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
         for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
     }
-    else diff = prod(smesh->Kd, kmath::vec3f(53, 131, 189));
+    else diff = prod(smesh->Kd, kmath::vec3f(15, 104, 189));
     kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;
     kmath::vec3f halfDir = kmath::normalize(lightDir - cameraFront);
     spec = prod(prod(lightColor, smesh->Ks), diff) * pow(max(0, norm * halfDir), gloss);
-    diff = prod(diff * max(norm * lightDir * 0.1 + 0.9, 0.f), lightColor);
+    diff = prod(diff * max(norm * lightDir * 0.2 + 0.8, 0.f), lightColor);
     ambi = prod(ambientColor, smesh->Ka);
     color = (spec + diff + ambi);
     cut_to_0_255(color);

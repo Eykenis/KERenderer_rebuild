@@ -127,7 +127,34 @@ kmath::vec3f calculateNormal(std::vector<std::vector<kmath::vec2f> >& heightspec
 	return kmath::normalize(kmath::cross(tangentx, tangenty));
 }
 
-Mesh doFFTOcean(float t) {
+Mesh FFTInit() {
+
+	Mesh fftMesh;
+	fftMesh.submesh.push_back(SubMesh());
+
+	for (int i = 0; i + 1 < OCEAN_SIZE; ++i) {
+		for (int j = 0; j + 1 < OCEAN_SIZE; ++j) {
+			int idx = i * OCEAN_SIZE + j;
+			fftMesh.submesh[0].face.push_back({ {idx, idx, idx}, {idx + 1, idx + 1, idx + 1}, {idx + OCEAN_SIZE, idx + OCEAN_SIZE, idx + OCEAN_SIZE} });
+		}
+	}
+	for (int i = 1; i < OCEAN_SIZE; ++i) {
+		for (int j = 0; j + 1 < OCEAN_SIZE; ++j) {
+			int idx = i * OCEAN_SIZE + j;
+			// trans
+			//fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1, 0, idx + 1}, {idx + 1 - OCEAN_SIZE, 0, idx + 1 - OCEAN_SIZE} });
+			fftMesh.submesh[0].face.push_back({ {idx, idx, idx}, {idx + 1 - OCEAN_SIZE, idx + 1 - OCEAN_SIZE, idx + 1 - OCEAN_SIZE}, {idx + 1, idx + 1, idx + 1} });
+		}
+	}
+
+	fftMesh.submesh[0].diffuse = new TGAimage;
+	fftMesh.submesh[0].diffuse->read_TGA("./tex/ocean.tga");
+	fftMesh.submesh[0].d = 0.25;
+
+	return fftMesh;
+}
+
+void doFFTOcean(float t, Mesh& originMesh) {
 	std::vector<std::vector<float> > gaussx = getGaussianRand(OCEAN_SIZE, OCEAN_SIZE);
 	std::vector<std::vector<float> > gaussy = getGaussianRand(OCEAN_SIZE, OCEAN_SIZE);
 	std::vector<std::vector<kmath::vec2f> > heightspectrogram;
@@ -151,22 +178,14 @@ Mesh doFFTOcean(float t) {
 		for (int j = 0; j < OCEAN_SIZE; ++j) {
 			float y = kmath::module(heightspectrogram[i][j]) / (30 / OCEAN_SCALE);
 			fftMesh.vert.push_back(kmath::vec3f(i * OCEAN_SCALE, y, j * OCEAN_SCALE));
+			fftMesh.tex_coord.push_back(kmath::vec2f(1.0f * i / OCEAN_SIZE, 1.0f * j / OCEAN_SIZE));
 			fftMesh.normal.push_back(calculateNormal(heightspectrogram, i, j));
 		}
 	}
-	for (int i = 0; i + 1 < OCEAN_SIZE; ++i) {
-		for (int j = 0; j + 1 < OCEAN_SIZE; ++j) {
-			int idx = i * OCEAN_SIZE + j;
-			fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1, 0, idx + 1}, {idx + OCEAN_SIZE, 0, idx + OCEAN_SIZE} });
-		}
-	}
-	for (int i = 1; i < OCEAN_SIZE; ++i) {
-		for (int j = 0; j + 1 < OCEAN_SIZE; ++j) {
-			int idx = i * OCEAN_SIZE + j;
-			// trans
-			//fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1, 0, idx + 1}, {idx + 1 - OCEAN_SIZE, 0, idx + 1 - OCEAN_SIZE} });
-			fftMesh.submesh[0].face.push_back({ {idx, 0, idx}, {idx + 1 - OCEAN_SIZE, 0, idx + 1 - OCEAN_SIZE}, {idx + 1, 0, idx + 1} });
-		}
-	}
-	return fftMesh;
+
+	//fftMesh.submesh[0].d = 0.25;
+
+	originMesh.normal = fftMesh.normal;
+	originMesh.tex_coord = fftMesh.tex_coord;
+	originMesh.vert = fftMesh.vert;
 }
