@@ -149,7 +149,7 @@ Mesh FFTInit() {
 
 	fftMesh.submesh[0].diffuse = new TGAimage;
 	fftMesh.submesh[0].diffuse->read_TGA("./tex/ocean.tga");
-	fftMesh.submesh[0].d = 0.25;
+	fftMesh.submesh[0].Kd = kmath::vec3f(69 / 255.0f, 131 / 255.0f, 179 / 255.0f);
 
 	return fftMesh;
 }
@@ -171,14 +171,16 @@ void doFFTOcean(float t, Mesh& originMesh) {
 
 	// translate to model
 	Mesh fftMesh;
-	fftMesh.normal.push_back({ 0, 0, 1 });
-	fftMesh.tex_coord.push_back({ 0, 0 });
+
 	fftMesh.submesh.push_back(SubMesh());
+
 	for (int i = 0; i < OCEAN_SIZE; ++i) {
 		for (int j = 0; j < OCEAN_SIZE; ++j) {
 			float y = kmath::module(heightspectrogram[i][j]) / (30 / OCEAN_SCALE);
 			fftMesh.vert.push_back(kmath::vec3f(i * OCEAN_SCALE, y, j * OCEAN_SCALE));
-			fftMesh.tex_coord.push_back(kmath::vec2f(1.0f * i / OCEAN_SIZE, 1.0f * j / OCEAN_SIZE));
+			float uvx = 1.0f * i / OCEAN_SIZE - t * wind.x / OCEAN_SIZE; while (uvx < 0.0f) uvx += 1.0f; while (uvx > 1.0f) uvx -= 1.0f;
+			float uvy = 1.0f * j / OCEAN_SIZE - t * wind.y / OCEAN_SIZE; while (uvy < 0.0f) uvy += 1.0f; while (uvy > 1.0f) uvy -= 1.0f;
+			fftMesh.tex_coord.push_back(kmath::vec2f(uvx, uvy));
 			fftMesh.normal.push_back(calculateNormal(heightspectrogram, i, j));
 		}
 	}

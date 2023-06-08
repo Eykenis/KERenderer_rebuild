@@ -77,7 +77,7 @@ int main() {
         shader1 = new ColorShader(&mesh, kmath::vec3f(250.f, 136.f, 150.f));
         break;
     case 6:
-        shader1 = new OceanShader(&fftmesh, 50.f);
+        shader1 = new OceanShader(&fftmesh, 75.f);
     default:
         break;
     }
@@ -89,7 +89,7 @@ int main() {
     while (!window->is_close) {
         cur_time = static_cast<float>(clock()) / CLOCKS_PER_SEC;
         if (rendermode == 6) {
-            doFFTOcean(cur_time, fftmesh);
+            doFFTOcean(cur_time * 0.5, fftmesh);
             shader1->resetMesh(&fftmesh);
         }
         fps++;

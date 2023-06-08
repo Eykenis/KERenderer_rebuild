@@ -28,6 +28,7 @@ bool OceanShader::frag(SubMesh* smesh, kmath::vec3f& bary, kmath::vec3f& color, 
     if (smesh->diffuse) {
         TGAcolor ref = smesh->diffuse->get(tex_u * smesh->diffuse->getWidth(), (1 - tex_v) * smesh->diffuse->getHeight());
         for (int i = 0; i < 3; ++i) diff.v[i] = ref.raw[i];
+        diff = prod(smesh->Kd, diff);
     }
     else diff = prod(smesh->Kd, kmath::vec3f(15, 104, 189));
     kmath::vec3f lightDir = kmath::normalize(lightPos - fragPos) * lightIntensity;

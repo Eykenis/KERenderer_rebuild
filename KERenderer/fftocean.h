@@ -6,7 +6,7 @@
 #define OCEAN_SCALE 0.25
 const float pi = 3.1416f;
 const float A = 1.0f;
-const kmath::vec2f wind(4.0f, 0.0f);
+const kmath::vec2f wind(2.0f, 2.0f);
 const float velocity = kmath::module(wind);
 const float g = 9.8f;
 const float L = (velocity * velocity) / g;
