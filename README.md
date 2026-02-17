@@ -6,5 +6,5 @@ A simple software renderer using ONLY C++ with WinAPI for display buffer only.
 ```bash
 git clone https://github.com/Eykenis/KERenderer_rebuild.git
 ```
-- open KERenderer.sln with MicrosoftVisual Studio
+- open KERenderer.sln with Microsoft Visual Studio
 - generate solutions
