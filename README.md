@@ -10,10 +10,13 @@ git clone https://github.com/Eykenis/KERenderer_rebuild.git
 - generate solutions
 
 ## Run
-- Download example model
-Aiz: https://sketchfab.com/3d-models/aiz-fa014baf982f4c6b9fd297d62105e85a
-African Head: https://github.com/ssloy/tinyrenderer/blob/master/obj/african_head/african_head.obj
-- Place .obj under ./obj/.
+Download example model
+
+- Aiz: https://sketchfab.com/3d-models/aiz-fa014baf982f4c6b9fd297d62105e85a
+
+- African Head: https://github.com/ssloy/tinyrenderer/blob/master/obj/african_head/african_head.obj
+
+Place .obj under `./obj/.`
 
 ## Demo
 Blinn-Phong Shading:
